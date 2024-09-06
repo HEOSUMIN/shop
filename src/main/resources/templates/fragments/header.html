@@ -57,10 +57,13 @@
             </a>
             <ul class="nav me-auto">
               <li class="nav-item"><a th:href="@{/product/list}" class="head-menu nav-link link-secondary px-3 active" aria-current="page"><b>전체 상품</b></a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=프리미엄펜}" class="head-menu nav-link link-secondary px-3">프리미엄 펜</a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=펜/연필}" class="head-menu nav-link link-secondary px-3">펜/연필</a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=마카/컬러링}" class="head-menu nav-link link-secondary px-3">마카/컬러링</a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=디자인문구}" class="head-menu nav-link link-secondary px-3">디자인 문구</a></li>
+              <li class="nav-item"><a th:href="@{/product/list2?section=침실}" class="head-menu nav-link link-secondary px-3">침실</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=거실}" class="head-menu nav-link link-secondary px-3">거실</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=주방}" class="head-menu nav-link link-secondary px-3">주방</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=다이닝}" class="head-menu nav-link link-secondary px-3">다이닝</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=욕실}" class="head-menu nav-link link-secondary px-3">욕실</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=홈오피스}" class="head-menu nav-link link-secondary px-3">홈오피스</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=어린이}" class="head-menu nav-link link-secondary px-3">어린이</a></li>
               <li class="nav-item"><a th:href="@{/cs/main}" class="head-menu nav-link link-secondary px-3" style="color: #6c757d;">고객센터</a></li>
             </ul>
             <form id="searchForm" name="searchForm" class="col-12 col-lg-auto mb-3 mb-lg-0 search-form" th:action="@{/product/search}" method="get" onsubmit="checkKeywordToSearch()">

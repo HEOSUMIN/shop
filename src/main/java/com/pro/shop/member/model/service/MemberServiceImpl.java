@@ -75,7 +75,7 @@ public class MemberServiceImpl implements MemberService {
 		/* 권한등록 */
 		RoleDTO role = new RoleDTO();
 		role.setMemberId(member.getMemberId());
-		role.setAutorityCode(1); 	//일반회원
+		role.setAuthorityCode(1);
 		
 		int resultB = memberMapper.insertRole(role);
 	
@@ -90,6 +90,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		MemberDTO member = memberMapper.findMemberById(username); //회원조회
+		
 		
 		if(member == null) {
 			member = new MemberDTO();
@@ -106,6 +107,7 @@ public class MemberServiceImpl implements MemberService {
 				}
 			}
 		}
+		
 		
 		UserImpl user = new UserImpl(member.getMemberId(), member.getMemberPwd(), authorities);
 		user.setDetails(member);

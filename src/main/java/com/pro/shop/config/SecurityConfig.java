@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.pro.shop.handler.LoginFailureHandler;
 import com.pro.shop.handler.LoginSuccessHandler;
@@ -19,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor 	//생성자 주입을 자동으로 설정 
+@RequiredArgsConstructor // 생성자 주입을 자동으로 설정
 public class SecurityConfig {
 
 	private final MemberService memberService;
@@ -27,25 +28,28 @@ public class SecurityConfig {
 	private final LoginSuccessHandler loginSuccessHandler;
 	private final LoginFailureHandler loginFailureHandler;
 
-	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf((csrfConfig) -> csrfConfig.disable())
 				.authorizeHttpRequests(
-						auto -> auto.requestMatchers("/", "/member/**").permitAll().anyRequest().authenticated())
+						auto -> auto.requestMatchers("/", "/member/**").permitAll()
+						.requestMatchers("/admin/**").permitAll()
+						.anyRequest().permitAll())
 				.formLogin(formLogin -> formLogin.loginPage("/member/signin").defaultSuccessUrl("/")
-						.successHandler(loginSuccessHandler).failureHandler(loginFailureHandler).usernameParameter("username")
-						.passwordParameter("password"));
+						.successHandler(loginSuccessHandler).failureHandler(loginFailureHandler)
+						.usernameParameter("username").passwordParameter("password"))
+				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/member/signout"))
+						.deleteCookies("JSESSIONID").invalidateHttpSession(true).logoutSuccessUrl("/"))
+				.exceptionHandling(ext->ext.accessDeniedPage("/common/denied"));
 
 		return http.build();
 
 	}
-	
-	
-    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(memberService).passwordEncoder(passwordEncoder);
-        return auth.build();
-    }
+
+	public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(memberService).passwordEncoder(passwordEncoder);
+		return auth.build();
+	}
 
 //
 //	@Bean

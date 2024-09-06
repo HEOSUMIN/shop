@@ -7,7 +7,7 @@ public class RoleDTO {
 
 	private String memberId;
 	
-	private int autorityCode;
+	private int authorityCode;
 	
 	private AuthorityDTO authority;
 }

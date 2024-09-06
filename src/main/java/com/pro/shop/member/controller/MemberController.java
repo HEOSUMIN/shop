@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pro.shop.member.model.dto.MemberDTO;
@@ -161,6 +162,14 @@ public class MemberController {
 		
 		return uri;
 		
+	}
+	
+	/**
+	 * 로그아웃
+	 */
+	@GetMapping("/signout")
+	public void signOut(SessionStatus status) {
+		status.setComplete(); //@SessionAttributes 어노테이션과 함께 session에 저장했던 속성 삭제
 	}
 	
 

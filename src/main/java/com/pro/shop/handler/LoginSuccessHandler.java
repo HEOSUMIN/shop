@@ -1,9 +1,11 @@
 package com.pro.shop.handler;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
@@ -70,7 +72,18 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		log.info("요청 uri : {}", uri);
 		
-		response.sendRedirect("/");
+		//response.sendRedirect("/");
+		
+		
+		
+		Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+		log.info("ROLE : {}", roles);
+		
+		if(roles.contains("ROLE_ADMIN")) {
+			response.sendRedirect("/admin/dashboard");
+		}else {
+			response.sendRedirect("/");
+		}
 		
 	}
 	

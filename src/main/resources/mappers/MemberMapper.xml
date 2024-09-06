@@ -21,11 +21,22 @@
 		<result property="accCreationDate" column="ACC_CREATION_DATE"/>
 		<result property="accChangedDate" column="ACC_CHANGED_DATE"/>
 		<result property="accClosingDate" column="ACC_CLOSING_DATE"/>
-		<result property="accClosingYn" column="ACC_CLOSING_YN"/>
-		<collection property="roleList" resultMap="roleResultMap"/>  -->
+		<result property="accClosingYn" column="ACC_CLOSING_YN"/>-->
+		<collection property="roleList" resultMap="roleResultMap"/>  
 	</resultMap> 
 	
+	<resultMap id="roleResultMap" type="com.pro.shop.member.model.dto.RoleDTO">
+		<id property="memberId" column="REF_MEMBER_ID"/>
+		<id property="authorityCode" column="REF_AUTHORITY_CODE"/>
+		<association property="authority" resultMap="authorityResultMap"/> 
+	</resultMap> 
 
+	 <resultMap id="authorityResultMap" type="com.pro.shop.member.model.dto.AuthorityDTO">
+		<id property="authCode" column="AUTHORITY_CODE"/>
+		<result property="authName" column="AUTHORITY_NAME"/>
+		<result property="authDesc" column="AUTHORITY_DESC"/>
+	</resultMap> 
+	
  	<select id="findMemberById" resultMap="memberResultMap">
 		SELECT
 			   A.MEMBER_ID
@@ -34,8 +45,16 @@
 			 , A.PHONE
 			 , A.EMAIL
 			 , A.ADDRESS
+			 , A.LATEST_LOGIN_DATE
+			 , B.MEMBER_ID REF_MEMBER_ID
+			 , B.AUTHORITY_CODE REF_AUTH_CODE
+			 , C.AUTHORITY_CODE REF_AUTH_CODE2
+			 , C.AUTHORITY_NAME
+			 , C.AUTHORITY_DESC
 		  FROM TBL_MEMBER A
-		 WHERE A.MEMBER_ID = #{ username }
+		  LEFT JOIN TBL_ROLE B ON(A.MEMBER_ID = B.MEMBER_ID)
+		  LEFT JOIN TBL_AUTHORITY C ON(B.AUTHORITY_CODE = C.AUTHORITY_CODE)
+		  WHERE A.MEMBER_ID = #{ username }
 	</select>
 	
 	<!-- 회원가입 -->
