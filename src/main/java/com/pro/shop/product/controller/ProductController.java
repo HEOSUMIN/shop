@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,12 +30,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import com.pro.shop.member.model.service.MemberService;
+import com.pro.shop.paging.model.dto.Criteria;
 import com.pro.shop.paging.model.dto.ItemCriteria;
 import com.pro.shop.product.model.dto.BrandDTO;
 import com.pro.shop.product.model.dto.CategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.service.ProductService;
-import com.pro.shop.upload.medel.dto.AttachmentDTO;
+import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -213,24 +215,75 @@ public class ProductController {
 		return mv;
 	}
 	
-
+	/*
+	 * 관리자 - 상품 목록 조회 
+	 */
+	@GetMapping("admin/product/list")
+	public void getProductList(@Valid @ModelAttribute("criteria") Criteria criteria, BindingResult bindingResult, HttpServletRequest request, Model model) {
+		log.info("상품 목록 조회 - 관리자 ");
+		
+		int total = productService.getTotalNumber(criteria); //전체
+		int onSale = productService.getOnSaleNumber(criteria); //판매중
+		
+		
+		List<ProductDTO> productList = productService.getProductList(criteria);
+		List<ProductDTO> onSaleOnly = productService.getOnSaleOnly(criteria); //판매중
+		
+		
+		log.info("productList : {}", productList);
+		log.info("onSaleOnly : {}", onSaleOnly);
+		
+		
+		model.addAttribute("total", total);
+		model.addAttribute("onSale", onSale);
+		
+		model.addAttribute("productList", productList);
+		model.addAttribute("onSaleOnly", onSaleOnly);
+		
+	}
+	
 	/*
 	 * 상품 목록 
 	 */
-	@GetMapping("/product/list2")
+	@GetMapping("/product/list")
 	public void getProductListByCategory(@Valid @ModelAttribute("itemCriteria") ItemCriteria itemCriteria, HttpSession session, Model model) {
-		
-		log.info("!!!!!!!!");
 		String section = itemCriteria.getSection();
-		log.info("요첨 section : {}", section);
-//		String section = itemCriteria.getSection();
-//		
-//		log.info("요첨 section : {}", section);
-//		log.info("요첨 itemCriteria : {}", itemCriteria);
-//		
-//		itemCriteria.setSection(section);
-		//List<ProductDTO> sortedList = productService.
+		log.info("요청 section : {}", section);
+		log.info("요청 itemCriteria : {}", itemCriteria);
 		
+		itemCriteria.setSection(section);
+		
+		List<ProductDTO> sortedList = productService.getProductListByCategorySection(itemCriteria);
+		List<ProductDTO> productList = new ArrayList<>();
+		
+		
+		//리스트 출력 
+		for(int i=0; i<sortedList.size(); i++) {
+			int prodNo = sortedList.get(i).getProdNo();
+			
+			log.info("prodNo : {}",prodNo);
+			ProductDTO productDTO = productService.getProductDetails(prodNo);
+			productList.add(productDTO);
+		}
+		
+		
+		List<AttachmentDTO> thumbnailList = new ArrayList<>();
+		for(int i=0; i<productList.size(); i++) {
+			int prodNo = productList.get(i).getProdNo();
+			
+			AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
+			thumbnailList.add(mainThumb);
+			
+		}
+		
+		
+		log.info("thumbnailList : {}", thumbnailList);
+		
+		
+		
+		model.addAttribute("section", section == null || section == "" ? "전체 상품" : section);
+		model.addAttribute("productList", productList);
+		model.addAttribute("thumbnailList", thumbnailList);
 	}
 	
 	

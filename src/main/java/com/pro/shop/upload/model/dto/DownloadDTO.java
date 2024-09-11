@@ -1,4 +1,4 @@
-package com.pro.shop.upload.medel.dto;
+package com.pro.shop.upload.model.dto;
 
 import lombok.Data;
 

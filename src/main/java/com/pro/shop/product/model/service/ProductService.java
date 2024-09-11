@@ -2,10 +2,12 @@ package com.pro.shop.product.model.service;
 
 import java.util.List;
 
+import com.pro.shop.paging.model.dto.Criteria;
+import com.pro.shop.paging.model.dto.ItemCriteria;
 import com.pro.shop.product.model.dto.BrandDTO;
 import com.pro.shop.product.model.dto.CategoryDTO;
-import com.pro.shop.upload.medel.dto.AttachmentDTO;
-
+import com.pro.shop.product.model.dto.ProductDTO;
+import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 public interface ProductService {
 	
@@ -23,5 +25,25 @@ public interface ProductService {
 	int checkCurrProdNo();
 	
 	int attachProdThumbnail(AttachmentDTO attachment);
+	
+	
+	//상품목록조회 
+	List<ProductDTO> getProductList(Criteria criteria);
+	
+	//
+	List<ProductDTO> getOnSaleOnly(Criteria criteria);
+	
+	//전체 상품 수 
+	int getTotalNumber(Criteria criteria);
+	
+	//판매중인 상품 수 
+	int getOnSaleNumber(Criteria criteria);
+	
+	ProductDTO getProductDetails(int prodNo);
+	
+	
+	List<ProductDTO> getProductListByCategorySection(ItemCriteria itemCriteria);
+	
+	AttachmentDTO getMainThumbnailByProdNo(int prodNo);
 }
  

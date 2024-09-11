@@ -37,6 +37,20 @@
 		<result property="brandName" column="BRAND_NAME"/>
 	</resultMap>
 	
+	<!-- 썸네일 조회용 -->
+	<resultMap id="thumbnailResultMap" type="com.pro.shop.upload.model.dto.AttachmentDTO">
+		<id property="attachmentNo" column="ATTACHMENT_NO"/>
+		<result property="refProdNo" column="REF_PROD_NO"/>
+		<result property="refRevwNo" column="REF_REVW_NO"/>
+		<result property="refInqNo" column="REF_INQ_NO"/>
+		<result property="origFileName" column="ORIG_FILE_NAME"/>
+		<result property="saveFileName" column="SAVE_FILE_NAME"/>
+		<result property="savePath" column="SAVE_PATH"/>
+		<result property="thumbnailPath" column="THUMBNAIL_PATH"/>
+		<result property="fileType" column="FILE_TYPE"/>
+		<result property="attachStatusYn" column="ATTACH_STATUS_YN"/>
+	</resultMap>
+	
 
 	<!-- 카테고리 목록 조회 -->
 	<select id="getCategoryList" resultMap="categoryResultMap">
@@ -65,6 +79,159 @@
 		 WHERE BRAND_NAME = #{ brandName }
 	</select>
 	
+	<!-- 현재 상품번호 조회 -->
+	<select id="checkCurrProdNo" resultType="int">
+		SELECT
+			   SEQ_PROD_NO.CURRVAL
+		  FROM DUAL
+	</select>
+	
+	<!-- 전체상품 개수 조회 -->
+	<select id="getTotalNumber" parameterType="com.pro.shop.paging.model.dto.Criteria" resultType="_int">
+		SELECT
+			   COUNT(DISTINCT A.PROD_NO)
+		  FROM TBL_PRODUCT A
+		<!--   LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
+		  LEFT JOIN TBL_BRAND C ON(A.BRAND_NO = C.BRAND_NO)
+		  LEFT JOIN TBL_OPTION O ON(A.PROD_NO = O.REF_PROD_NO)
+		 WHERE 1 = 1 -->
+		 <!-- <include refid="dashboardProductSearch"/> -->
+	</select>
+	
+	<!-- 판매중 상품 개수 조회 -->
+	<select id="getOnSaleNumber" parameterType="com.pro.shop.paging.model.dto.Criteria" resultType="_int">
+		SELECT
+			   COUNT(DISTINCT A.PROD_NO)
+		  FROM TBL_PRODUCT A
+	<!-- 	  LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
+		  LEFT JOIN TBL_BRAND C ON(A.BRAND_NO = C.BRAND_NO)
+		  LEFT JOIN TBL_OPTION O ON(A.PROD_NO = O.REF_PROD_NO)
+		 WHERE A.PROD_AVAIL_YN = 'Y'
+		 <include refid="dashboardProductSearch"/> -->
+	</select>
+	
+	
+	<select id="getProductList" parameterType="com.pro.shop.paging.model.dto.Criteria" resultMap="productResultMap">
+	
+		SELECT 
+			   DENSE_RANK() OVER (
+			ORDER BY A.PROD_INST_DATE DESC,
+			A.PROD_NO DESC) RANK,
+			A.PROD_NO,
+			B.CATEGORY_NAME,
+			C.BRAND_NAME,
+			A.PROD_NAME,
+			A.PROD_DESC,
+			A.PROD_PRICE,
+			A.DISCOUNT_RATE,
+			A.PROD_DETAIL_CONTENT,
+			A.PROD_DETAIL_VIEW_COUNT,
+			A.PROD_INST_DATE,
+			A.PROD_UPT_DATE,
+			A.PROD_AVAIL_YN,
+			A.PROD_SIZE,
+			A.PROD_COLOR
+		FROM
+			TBL_PRODUCT A
+		 LEFT JOIN TBL_CATEGORY B ON
+			(A.CATEGORY_NO = B.CATEGORY_NO)
+		LEFT JOIN TBL_BRAND C ON
+			(A.BRAND_NO = C.BRAND_NO)
+		<!-- LEFT JOIN TBL_OPTION O ON
+			(A.PROD_NO = O.REF_PROD_NO)  -->
+		WHERE
+			1 = 1
+	</select>
+	
+	<select id="getOnSaleOnly" parameterType="com.pro.shop.paging.model.dto.Criteria" resultMap="productResultMap">
+	
+		SELECT 
+				  			   DENSE_RANK() OVER (
+			ORDER BY A.PROD_INST_DATE DESC,
+			A.PROD_NO DESC) RANK,
+			A.PROD_NO,
+			B.CATEGORY_NAME,
+			C.BRAND_NAME,
+			A.PROD_NAME,
+			A.PROD_DESC,
+			A.PROD_PRICE,
+			A.DISCOUNT_RATE,
+			A.PROD_DETAIL_CONTENT,
+			A.PROD_DETAIL_VIEW_COUNT,
+			A.PROD_INST_DATE,
+			A.PROD_UPT_DATE,
+			A.PROD_AVAIL_YN,
+			A.PROD_SIZE,
+			A.PROD_COLOR
+		FROM
+			TBL_PRODUCT A
+		 LEFT JOIN TBL_CATEGORY B ON
+			(A.CATEGORY_NO = B.CATEGORY_NO)
+		LEFT JOIN TBL_BRAND C ON
+			(A.BRAND_NO = C.BRAND_NO)
+		WHERE  A.PROD_AVAIL_YN = 'Y'
+		<!-- LEFT JOIN TBL_OPTION O ON
+			(A.PROD_NO = O.REF_PROD_NO)  -->
+	</select>
+	
+
+	<!-- 상품 상세정보 조회 -->
+	<select id="getProductDetails" resultMap="productResultMap">
+		SELECT
+			   A.PROD_NO
+			 , B.CATEGORY_NAME
+			 , C.BRAND_NAME
+			 , A.PROD_NAME
+			 , A.PROD_DESC
+			 , A.DISCOUNT_RATE
+			 , A.PROD_PRICE
+			 , A.PROD_DETAIL_CONTENT
+			 , A.PROD_DETAIL_VIEW_COUNT
+			 , A. PROD_INST_DATE
+			 , A.PROD_UPT_DATE
+			 , A.PROD_AVAIL_YN
+			 , A.PROD_SIZE
+			 , A.PROD_COLOR
+			 , T.THUMBNAIL_PATH
+		  FROM TBL_PRODUCT A
+		  LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
+		  LEFT JOIN TBL_BRAND C ON(A.BRAND_NO = C.BRAND_NO)
+		  LEFT JOIN TBL_ATTACHMENT T ON(A.PROD_NO = T.REF_PROD_NO)
+		 <!--  LEFT JOIN TBL_OPTION O ON(A.PROD_NO = O.REF_PROD_NO) -->
+		 WHERE A.PROD_NO = #{ prodNo }
+	</select>
+	
+	<!-- 필터별 상품 목록 조회 -->
+	<select id="getProductListByCategorySection" parameterType="com.pro.shop.paging.model.dto.ItemCriteria" resultMap="productResultMap">
+		SELECT
+				  DISTINCT(A.PROD_NO)
+				, A.PROD_PRICE
+				, A.PROD_DETAIL_VIEW_COUNT
+				, A.PROD_INST_DATE
+			 FROM TBL_PRODUCT A
+			 LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
+			 LEFT JOIN TBL_BRAND C ON(A.BRAND_NO = C.BRAND_NO)
+			 LEFT JOIN (SELECT	
+			 				   AA.PROD_NO AS AAPNO
+						 FROM TBL_PRODUCT AA
+						GROUP BY AA.PROD_NO) RT
+					ON(RT.AAPNO = A.PROD_NO)
+			WHERE A.PROD_AVAIL_YN = 'Y'
+	</select>
+	
+	<!-- 상품별 메인썸네일 조회 -->
+	<select id="getMainThumbnailByProdNo" resultMap="thumbnailResultMap">
+		SELECT
+			   REF_PROD_NO
+			 , THUMBNAIL_PATH
+			 , SAVE_PATH
+		  FROM TBL_ATTACHMENT
+		 WHERE ATTACH_STATUS_YN = 'Y'
+		   AND FILE_TYPE = 'THUMB_MAIN'
+		   AND REF_PROD_NO = #{ prodNo }
+	</select>
+	
+		
 	<!-- 상품 등록 -->
 	<insert id="addProduct">
 		INSERT
@@ -103,13 +270,6 @@
 		, #{ prodColor } 
 		)
 	</insert>
-	
-	<!-- 현재 상품번호 조회 -->
-	<select id="checkCurrProdNo" resultType="int">
-		SELECT
-			   SEQ_PROD_NO.CURRVAL
-		  FROM DUAL
-	</select>
 	
 	
 	<!-- 상품 썸네일 등록 -->

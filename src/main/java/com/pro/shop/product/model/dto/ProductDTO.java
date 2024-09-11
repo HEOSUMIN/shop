@@ -3,7 +3,7 @@ package com.pro.shop.product.model.dto;
 import java.util.Date;
 import java.util.List;
 
-import com.pro.shop.upload.medel.dto.AttachmentDTO;
+import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 import lombok.Data;
 
@@ -21,8 +21,8 @@ public class ProductDTO {
 	private String prodColor;
 	private String prodDetailContent; //상품상세내용
 	private int prodDetailViewCount;  //상품상세조회수
-	private Date prodEnrollDate;	  //상품등록일자
-	private Date prodChangeDate;	  //상품수정일자
+	private Date prodInstDate;	  //상품등록일자
+	private Date prodUdtDate;	  //상품수정일자
 	private char prodAvailYn;		  //상품판매여부
 	private List<AttachmentDTO> attachmentList;
 	
