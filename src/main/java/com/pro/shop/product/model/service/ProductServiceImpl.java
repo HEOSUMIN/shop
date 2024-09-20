@@ -10,7 +10,9 @@ import com.pro.shop.paging.model.dto.ItemCriteria;
 import com.pro.shop.product.model.dao.ProductMapper;
 import com.pro.shop.product.model.dto.BrandDTO;
 import com.pro.shop.product.model.dto.CategoryDTO;
+import com.pro.shop.product.model.dto.MainCategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
+import com.pro.shop.product.model.dto.RoomsDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 @Service("productService")
@@ -21,6 +23,16 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	public ProductServiceImpl(ProductMapper productMapper) {
 		this.productMapper = productMapper;
+	}
+	
+	@Override
+	public List<RoomsDTO> getRoomList() {
+		return productMapper.getRoomList();
+	}
+	
+	@Override
+	public List<CategoryDTO> getMainCategoryList(int roomNo) {
+		return productMapper.getMainCategoryList(roomNo);
 	}
 	
 	@Override
@@ -96,6 +108,22 @@ public class ProductServiceImpl implements ProductService {
 	public AttachmentDTO getMainThumbnailByProdNo(int prodNo) {
 		return productMapper.getMainThumbnailByProdNo(prodNo);
 	}
+
+	@Override
+	public int checkBrandName(String brandName) {
+		return productMapper.checkBrandName(brandName);
+	}
+
+	@Override
+	public int addNewBrand(String brandName) {
+		return productMapper.addNewBrand(brandName);
+	}
+
+
+
+	
+
+	
 
 
 	

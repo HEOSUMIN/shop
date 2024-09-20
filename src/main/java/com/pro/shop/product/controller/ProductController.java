@@ -21,6 +21,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -54,13 +57,10 @@ public class ProductController {
 	public static final int THUMB_WIDTH_SIZE = 540;
 	public static final int THUMB_HEIGHT_SIZE = 540;
 	
-	
 	private final ProductService productService;
 	private final MemberService memberService;
 	private final MessageSource messageSource;
 
-	
-	
 	@Autowired
 	public ProductController(ProductService productService, MemberService memberService, MessageSource messageSource) {
 		this.productService = productService;
@@ -68,19 +68,65 @@ public class ProductController {
 		this.messageSource = messageSource;
 	}
 	
+	
 	/*
 	 * 관리자 - 상품등록 
 	 */
 	@GetMapping("/admin/product/add")
 	public void addProduct(Model model) {
-		
 		List<CategoryDTO> category = productService.getCategoryList();
 		model.addAttribute("category", category);
 		
 		List<BrandDTO> brand = productService.getBrandList();
 		model.addAttribute("brand", brand);
-		
 	}
+	
+	
+	/*
+	 *  관리자 - 상품등록 - 상위 카테고리에 따른 하위 카테고리 조회 
+	 */
+	@GetMapping(value="/option", produces="application/json; charset=UTF-8")
+	@ResponseBody
+	public List<CategoryDTO> checkMainCategory(@RequestParam("roomNo") int roomNo, Model model) {
+		List<CategoryDTO> mainCategoryList = productService.getMainCategoryList(roomNo);
+		model.addAttribute("mainCategoryList", mainCategoryList);		
+		
+		return mainCategoryList;
+	}
+	
+	
+	/*
+	 * 관리자 - 상품등록 - 브랜드 중복검사 및 새 브랜드 추가 
+	 */
+	@PostMapping(value="/admin/product/addBrand", produces="application/json; charset=UTF-8")
+	@ResponseBody
+	public ModelAndView addBrand(@RequestBody Map<String, String> param, Locale locale ) {
+		ModelAndView mv = new ModelAndView();
+		MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
+		mv.setView(jsonView);
+		
+		//중복검사 
+		String brandName = param.get("brand").replaceAll("\\s","");
+		log.info(brandName);
+		
+		int brandCount = productService.checkBrandName(brandName);
+		
+		if(brandCount > 0) {
+			String errorMessage = messageSource.getMessage("errorWhileAddingANewBrand", null, locale);
+			mv.addObject("errorMessage", errorMessage);
+			log.info(errorMessage);
+		}
+		
+		//새 브랜드 추가
+		if(brandCount == 0) { 
+			int result = productService.addNewBrand(brandName);
+			if(result == 1) {
+				log.info("새 브랜드 추가 완료 : {}", brandName);
+			}
+		}
+		return mv;
+	}
+	
 	
 	/*
 	 * 관리자 - 상품등록
@@ -98,8 +144,8 @@ public class ProductController {
 		
 		
 		/* 상품추가 */
-		String categoryName = params.get("category").toString();
-		int categoryNo = productService.checkCategoryNo(categoryName);
+		//String categoryName = params.get("category").toString();
+		int categoryNo = Integer.parseInt(params.get("category").toString()) ;
 		String brandName =  params.get("brand").toString();
 		int brandNo = productService.checkBrandNo(brandName);
 		String prodName = params.get("prodName").toString();
@@ -247,21 +293,19 @@ public class ProductController {
 	 */
 	@GetMapping("/product/list")
 	public void getProductListByCategory(@Valid @ModelAttribute("itemCriteria") ItemCriteria itemCriteria, HttpSession session, Model model) {
+		
+		log.info("model : {}" , model);
+		
 		String section = itemCriteria.getSection();
-		log.info("요청 section : {}", section);
-		log.info("요청 itemCriteria : {}", itemCriteria);
 		
 		itemCriteria.setSection(section);
 		
 		List<ProductDTO> sortedList = productService.getProductListByCategorySection(itemCriteria);
 		List<ProductDTO> productList = new ArrayList<>();
 		
-		
 		//리스트 출력 
 		for(int i=0; i<sortedList.size(); i++) {
 			int prodNo = sortedList.get(i).getProdNo();
-			
-			log.info("prodNo : {}",prodNo);
 			ProductDTO productDTO = productService.getProductDetails(prodNo);
 			productList.add(productDTO);
 		}
@@ -270,7 +314,6 @@ public class ProductController {
 		List<AttachmentDTO> thumbnailList = new ArrayList<>();
 		for(int i=0; i<productList.size(); i++) {
 			int prodNo = productList.get(i).getProdNo();
-			
 			AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
 			thumbnailList.add(mainThumb);
 			

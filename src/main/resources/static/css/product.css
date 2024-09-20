@@ -717,7 +717,7 @@ a:hover {
 
 .product-breadcrumb {
 	font-size: 12px;
-	float: right;	 
+	float: left;	 
 	cursor: default;
 }
 
@@ -1139,4 +1139,55 @@ h2 {
 
 small {
     color: #6c757d;
+}
+
+h3 {
+	margin-top: 30px;
+	margin-bottom: .5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+hr{
+	height: 2px;
+}
+
+.category {
+    padding: 10px 7px 50px 7px;
+}
+
+.category-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    column-gap: 22.5px;
+    row-gap: 28px;
+}
+
+.category .category-list li .cate-item .cate-img {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 110px;
+    height: 110px;
+    background-color: #f7f7f7;
+}
+
+.category .category-list li .cate-item .cate-img img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 110px;
+    max-height: 110px;
+}
+
+.category .category-list li .cate-item .cate-text {
+    display: block;
+    overflow: hidden;
+    width: calc(100% + 20px);
+    margin: 12px 0 0 -10px;
+    line-height: 1.4;
+    color: #121212;
+    text-align: center;
 }

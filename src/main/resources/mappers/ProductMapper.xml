@@ -23,12 +23,27 @@
 	<!-- 	<association property="attachmentList" resultMap="thumbnailResultMap"/> 1:1 -->
 		<!-- <collection property="option" resultMap="optionResultMap"/> 1:N -->
 	</resultMap>
+	
+	<!-- 공간 조회용 -->
+	<resultMap id="roomResultMap" type="com.pro.shop.product.model.dto.RoomsDTO">
+		<id property="roomNo" column="ROOM_NO"/>
+		<result property="roomName" column="ROOM_NAME"/>
+	</resultMap>
 
+	<!-- 상위 카테고리 조회용 -->
+	<resultMap id="mainCategoryResultMap" type="com.pro.shop.product.model.dto.MainCategoryDTO">
+		<id property="mainCategoryNo" column="MAIN_CATEGORY_NO"/>
+		<result property="mainCategoryName" column="MAIN_CATEGORY_NAME"/>
+		<result property="roomNo" column="ROOM_NO"/>
+	</resultMap>
+		
 	<!-- 카테고리 조회용 -->
 	<resultMap id="categoryResultMap" type="com.pro.shop.product.model.dto.CategoryDTO">
 		<id property="categoryNo" column="CATEGORY_NO"/>
+		<result property="upCategoryNo" column="UP_CATEGORY_NO"/>
 		<result property="categoryName" column="CATEGORY_NAME"/>
-		<result property="categorySection" column="CATEGORY_SECTION"/>
+		<result property="depth" column="DEPTH"/>
+		<result property="sort" column="SORT"/>
 	</resultMap>
 	
 	<!-- 브랜드 조회용 -->
@@ -50,12 +65,45 @@
 		<result property="fileType" column="FILE_TYPE"/>
 		<result property="attachStatusYn" column="ATTACH_STATUS_YN"/>
 	</resultMap>
-	
 
+	<!-- 공간 목록 조회 -->
+	<select id="getRoomList" resultMap="roomResultMap">
+		SELECT * FROM TBL_ROOMS
+	</select>
+	
+	<!-- 상위 카테고리에 따른 하위 목록 조회 -->
+	<select id="getMainCategoryList" parameterType="int" resultMap="categoryResultMap">
+		SELECT
+			CATEGORY_NO
+			,UP_CATEGORY_NO
+			,CATEGORY_NAME
+			,DEPTH
+			,SORT
+		FROM
+			TBL_CATEGORY
+		WHERE UP_CATEGORY_NO  = #{roomNo}
+		START WITH
+			CATEGORY_NO = '1'
+		CONNECT BY
+			PRIOR CATEGORY_NO = UP_CATEGORY_NO
+	</select>
+	
 	<!-- 카테고리 목록 조회 -->
 	<select id="getCategoryList" resultMap="categoryResultMap">
-		SELECT * FROM TBL_CATEGORY
+		SELECT
+			CATEGORY_NO
+			,UP_CATEGORY_NO
+			,LPAD(' ', (LEVEL-1)* 4 ) || CATEGORY_NAME AS CATEGORY_NAME
+			,DEPTH
+			,SORT
+		FROM
+			TBL_CATEGORY
+		START WITH
+			CATEGORY_NO = '1'
+		CONNECT BY
+			PRIOR CATEGORY_NO = UP_CATEGORY_NO
 	</select>
+	
 
 	<!-- 카테고리 번호 조회 -->
 	<select id="checkCategoryNo" parameterType="String" resultType="int">
@@ -77,6 +125,14 @@
 			   BRAND_NO
 		  FROM TBL_BRAND
 		 WHERE BRAND_NAME = #{ brandName }
+	</select>
+	
+	<!-- 브랜드 이름 조회 -->
+	<select id="checkBrandName" parameterType="String" resultType="int">
+		SELECT
+			   COUNT(*)
+		  FROM TBL_BRAND
+		 WHERE REPLACE(TRIM(BRAND_NAME), ' ', '') = #{ brandName }
 	</select>
 	
 	<!-- 현재 상품번호 조회 -->
@@ -208,6 +264,8 @@
 				, A.PROD_PRICE
 				, A.PROD_DETAIL_VIEW_COUNT
 				, A.PROD_INST_DATE
+				, B.SECTION
+				, A.CATEGORY_NO 
 			 FROM TBL_PRODUCT A
 			 LEFT JOIN TBL_CATEGORY B ON(A.CATEGORY_NO = B.CATEGORY_NO)
 			 LEFT JOIN TBL_BRAND C ON(A.BRAND_NO = C.BRAND_NO)
@@ -217,6 +275,7 @@
 						GROUP BY AA.PROD_NO) RT
 					ON(RT.AAPNO = A.PROD_NO)
 			WHERE A.PROD_AVAIL_YN = 'Y'
+			<if test="section != null and section != ''">AND B.SECTION = #{ section }</if>
 	</select>
 	
 	<!-- 상품별 메인썸네일 조회 -->
@@ -231,7 +290,21 @@
 		   AND REF_PROD_NO = #{ prodNo }
 	</select>
 	
-		
+	<!-- 브랜드 추가 -->
+	<insert id="addNewBrand">
+		INSERT
+		  INTO TBL_BRAND
+		(
+		  BRAND_NO
+		, BRAND_NAME
+		)
+		VALUES
+		(
+		  (SELECT MAX(BRAND_NO)+1 FROM TBL_BRAND)
+		, #{ brandName }
+		)
+	</insert>
+	
 	<!-- 상품 등록 -->
 	<insert id="addProduct">
 		INSERT

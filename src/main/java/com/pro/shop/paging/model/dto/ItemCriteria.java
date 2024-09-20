@@ -10,7 +10,7 @@ public class ItemCriteria {
 	private int page;
 	private int items;
 	private String section;
-	private String category;
+	private String category;	//현재 카테고리 
 	private String brand;
 	private int min;
 	private int max;

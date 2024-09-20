@@ -18,29 +18,54 @@
 	  </ol>
 	</nav>
 	<th:block th:unless="${ section == '전체 상품' }">
-		<div class="product-filter">
-			<div class="filter filter-brand">
-				<ul>
-					<li class="th"><p>브랜드</p></li>
-					<li class="td">
-						<span class="brand-span" th:each="brand : ${ brandBySection }" th:data-target="${ brand }"><a href="#">[[${ brand }]]</a></span>
-					</li>
-				</ul>
-			</div>
-			<div class="filter filter-price">
-				<ul>
-					<li class="th"><p>가격범위</p></li>
-					<li class="td">
-						<span class="price-span" data-target="all"><a href="#">전체보기</a></span>
-						<span class="price-span" data-target="10000"><a href="#">~10,000원</a></span>
-						<span class="price-span" data-target="30000"><a href="#">10,000~30,000원</a></span>
-						<span class="price-span" data-target="50000"><a href="#">30,000~50,000원</a></span>
-						<span class="price-span" data-target="80000"><a href="#">50,000~80,000원</a></span>
-						<span class="price-span" data-target="over"><a href="#">80,000원~</a></span>
-					</li>
-				</ul>
-			</div>
+		<br>
+		<h3>침실</h3>
+		<hr>
+		<div class="category">
+		<ul class="category-list">
+			<li>
+				<a th:href="@{/product/list?mainCategory=침대}" class="cate-item">
+					<span class="cate-img"><img src="/image/sofa.jpg"></span>
+					<span class="cate-text">침대</span>
+				</a>
+			</li>
+			<li>
+				<a href=""  class="cate-item">
+					<span class="cate-img"><img src="/image/sofa.jpg"></span>
+					<span class="cate-text">매트리스</span>
+				</a>
+			</li>
+			<li>
+				<a href=""  class="cate-item">
+					<span class="cate-img"><img src="/image/sofa.jpg"></span>
+					<span class="cate-text">화장대/서랍</span>
+				</a>
+			</li>
+		</ul>
 		</div>
+		
+		
+		<!-- <div class="filter filter-brand">
+			<ul>
+				<li class="th"><p>브랜드</p></li>
+				<li class="td">
+					<span class="brand-span" th:each="brand : ${ brandBySection }" th:data-target="${ brand }"><a href="#">[[${ brand }]]</a></span>
+				</li>
+			</ul>
+		</div>
+		<div class="filter filter-price">
+			<ul>
+				<li class="th"><p>가격범위</p></li>
+				<li class="td">
+					<span class="price-span" data-target="all"><a href="#">전체보기</a></span>
+					<span class="price-span" data-target="10000"><a href="#">~10,000원</a></span>
+					<span class="price-span" data-target="30000"><a href="#">10,000~30,000원</a></span>
+					<span class="price-span" data-target="50000"><a href="#">30,000~50,000원</a></span>
+					<span class="price-span" data-target="80000"><a href="#">50,000~80,000원</a></span>
+					<span class="price-span" data-target="over"><a href="#">80,000원~</a></span>
+				</li>
+			</ul>
+		</div> -->
 	</th:block>
 	<div class="sorting">
 		<form id="sortingForm" name="sortingForm" class="sorting-form" th:object="${itemCriteria}" th:action="@{/product/list}" method="get">
@@ -117,7 +142,9 @@
 		               <div class="card-body">
 							<div class="text-left" th:value="${ product.prodPrice - (product.prodPrice * product.discountRate / 100) }">
 								<small>[[${ product.brand.brandName }]]</small>
+								<br>
 								<h6>[[${ product.prodName }]]</h6>
+								<br>
 								<!-- 판매가A. 할인 대상이 아닌 경우 원가 그대로 출력 -->
 								<th:block th:if="${product.discountRate} == 0">
 									<b class="price">[[${#numbers.formatInteger(product.prodPrice, 3, 'COMMA')}]]원</b>
@@ -127,8 +154,12 @@
 									<b class="price">
 										[[${#numbers.formatInteger(product.prodPrice - (product.prodPrice * product.discountRate / 100), 3, 'COMMA')}]]원
 									</b>
-									<del>[[${#numbers.formatInteger(product.prodPrice, 3, 'COMMA')}]]</del>
-									<b>&nbsp;[[${ product.discountRate }]]%</b>
+									<br>
+									<b>[[${ product.discountRate }]]%&nbsp;</b>
+									<del>[[${#numbers.formatInteger(product.prodPrice, 3, 'COMMA')}]]</del>원
+									
+									
+									
 								</th:block>
 							</div>
 						</div>

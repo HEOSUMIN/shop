@@ -6,14 +6,24 @@ import com.pro.shop.paging.model.dto.Criteria;
 import com.pro.shop.paging.model.dto.ItemCriteria;
 import com.pro.shop.product.model.dto.BrandDTO;
 import com.pro.shop.product.model.dto.CategoryDTO;
+import com.pro.shop.product.model.dto.MainCategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
+import com.pro.shop.product.model.dto.RoomsDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 public interface ProductService {
 	
+	List<RoomsDTO> getRoomList();
+	
+	List<CategoryDTO> getMainCategoryList(int prodNo);
+	
 	List<CategoryDTO> getCategoryList();
 	
 	List<BrandDTO> getBrandList();
+	
+	int checkBrandName(String brandName);
+	
+	int addNewBrand(String brandName);
 	
 	int addProduct(	int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);

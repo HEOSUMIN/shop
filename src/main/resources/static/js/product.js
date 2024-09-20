@@ -29,14 +29,127 @@ function reselectImage() {
 
 
 
+/* room 분류 변경 시  */
+function roomCategory(){
+	let roomNo = document.getElementById('roomCategoryName').value;
+
+	/* 메인,하위분류 리셋  */	
+ 	//	document.getElementById('mainCategoryName').value = '';
+	//document.getElementById('subCategoryName').value = '';		
+	
+	$('#mainCategoryName').children('option').remove();
+	$('#subCategoryName').children('option').remove();
+	$('#mainCategoryName').prepend('<option selected disabled hidden >선택</option>');
+	$('#subCategoryName').prepend('<option selected disabled hidden >선택</option>');
+	
+	
+	$.ajax({
+	    url : '/option',
+	    type : 'get',
+	    dataType : 'json',
+		contentType: "application/json; charset=UTF-8",
+	    data : {roomNo : roomNo},
+		success: function (result) {
+				 for (i = 0; i < result.length; i++) {
+						console.log(result[i].categoryName);
+	                    $('#mainCategoryName').append("<option value='" + result[i].categoryNo + "'>" +result[i].categoryName + "</option>");
+	              }
+								 
+		        }
+	      }).fail(function (error) {
+	          alert(JSON.stringify(error));
+      });
+	  
+}
+
+/* main 분류 변경 시  */
+function mainCategory(){
+	
+	let roomNo = document.getElementById('mainCategoryName').value;
+	
+	console.log("mainCategoryNo:: ", roomNo);
+
+	/* 하위분류 리셋  */	
+	//document.getElementById('subCategoryName').value = '';
+	$('#subCategoryName').children('option').remove();
+	$('#subCategoryName').prepend('<option selected disabled hidden >선택</option>');
+	
+	
+	$.ajax({
+	    url : '/option',
+	    type : 'get',
+	    dataType : 'json',
+		contentType: "application/json; charset=UTF-8",
+	    data : {roomNo : roomNo},
+		success: function (result) {
+				 for (i = 0; i < result.length; i++) {
+	                    $('#subCategoryName').append("<option value='" + result[i].categoryNo + "'>" +result[i].categoryName + "</option>");
+	              }
+								 
+		        }
+	      }).fail(function (error) {
+	          alert(JSON.stringify(error));
+      });
+}
+
+/* 새 브랜드 추가 */
+function addABrand(){
+	let brand = document.getElementById('brandName').value;
+	
+	if(brand == 'etc'){
+		$('#addNewBrand').attr('disabled', false);
+		$('#addNewBrand').css('background-color', 'transparent');
+		
+		$('#addNewBrand').blur(function(){
+			brand = document.getElementById('addNewBrand').value;
+			console.log("addNewBrand : " + brand);
+			
+			let param = { brand : brand };
+					
+			$.ajax({
+				url : '/admin/product/addBrand',
+				data : JSON.stringify(param),
+				type : 'post',
+				beforeSend : function(xhr) {
+					xhr.setRequestHeader("Accept", "application/json");
+					xhr.setRequestHeader("Content-Type", "application/json");
+				},
+				success : function(data){
+					if(data.errorMessage){
+						Swal.fire({
+							icon: 'error',
+							title: data.errorMessage,
+							confirmButtonColor: '#00008b',
+							confirmButtonText: '확인'
+						}).then((result) => {
+							if(result.isConfirmed) {
+								$('#addNewBrand').val(''); //입력값 삭제 및 입력란 비활성화
+								$('#addNewBrand').attr('disabled', true);
+								$('#addNewBrand').css('background-color', '#E5E5E5');
+								$('#brandName').val(brand); //해당 브랜드 자동 선택
+								return;
+							}
+						})
+					}
+				},
+				error : function(status, error){ console.log(status, error); }
+			});
+		})
+		
+	}else{
+		$('#addNewBrand').val('');
+		$('#addNewBrand').attr('disabled', true);
+		$('#addNewBrand').css('background-color', '#E5E5E5');
+	}
+}
+
+
 
 /* 상품등록 폼 제출 */
-
 function submitProductForm(){
 	
-
 	//카테고리 
-	let category = document.getElementById('categoryName').value;
+	let category = document.getElementById('subCategoryName').value;
 	if(category == 'etc') {
 		category = document.getElementById('addNewCategory').value;
 	}
@@ -44,7 +157,7 @@ function submitProductForm(){
 	//브랜드
 	let brand = document.getElementById('brandName').value;
 	if(brand == 'etc') {
-		brand = document.getElementById('addNewCategory').value;
+		brand = document.getElementById('addNewBrand').value;
 	}
 	
 	//상품명 
