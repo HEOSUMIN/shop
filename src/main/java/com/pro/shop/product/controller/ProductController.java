@@ -293,23 +293,26 @@ public class ProductController {
 	 */
 	@GetMapping("/product/list")
 	public void getProductListByCategory(@Valid @ModelAttribute("itemCriteria") ItemCriteria itemCriteria, HttpSession session, Model model) {
-		
-		log.info("model : {}" , model);
-		
 		String section = itemCriteria.getSection();
-		
 		itemCriteria.setSection(section);
 		
-		List<ProductDTO> sortedList = productService.getProductListByCategorySection(itemCriteria);
+		// 전체상품이 아닐 경우 
+		if(itemCriteria.getCategory() != null) {
+			int roomNo = Integer.parseInt(itemCriteria.getCategory());
+			List<CategoryDTO> subCategoryList = productService.getMainCategoryList(roomNo);
+			model.addAttribute("subCategoryList", subCategoryList);
+		}
+		
+		// 카테고리별 리스트 가져오기
+		List<ProductDTO> sortedList = productService.getProductListByCategorySection(itemCriteria); 
 		List<ProductDTO> productList = new ArrayList<>();
 		
-		//리스트 출력 
+		// 상품 리스트 출력 
 		for(int i=0; i<sortedList.size(); i++) {
 			int prodNo = sortedList.get(i).getProdNo();
 			ProductDTO productDTO = productService.getProductDetails(prodNo);
 			productList.add(productDTO);
 		}
-		
 		
 		List<AttachmentDTO> thumbnailList = new ArrayList<>();
 		for(int i=0; i<productList.size(); i++) {
@@ -318,11 +321,6 @@ public class ProductController {
 			thumbnailList.add(mainThumb);
 			
 		}
-		
-		
-		log.info("thumbnailList : {}", thumbnailList);
-		
-		
 		
 		model.addAttribute("section", section == null || section == "" ? "전체 상품" : section);
 		model.addAttribute("productList", productList);

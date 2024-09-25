@@ -275,7 +275,12 @@
 						GROUP BY AA.PROD_NO) RT
 					ON(RT.AAPNO = A.PROD_NO)
 			WHERE A.PROD_AVAIL_YN = 'Y'
-			<if test="section != null and section != ''">AND B.SECTION = #{ section }</if>
+			<!-- <if test="section != null and section != ''">AND B.SECTION = #{ section }</if> -->
+			<if test="category != null and category != ''">AND A.CATEGORY_NO IN (SELECT AA.CATEGORY_NO 
+																					FROM TBL_CATEGORY AA
+																					START WITH AA.CATEGORY_NO = #{ category }
+																					CONNECT BY PRIOR AA.CATEGORY_NO = AA.UP_CATEGORY_NO)</if>
+			
 	</select>
 	
 	<!-- 상품별 메인썸네일 조회 -->

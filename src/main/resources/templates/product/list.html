@@ -17,33 +17,21 @@
 	    <li class="breadcrumb-item active" aria-current="page">[[${ section }]]</li>
 	  </ol>
 	</nav>
-	<th:block th:unless="${ section == '전체 상품' }">
+	<div th:unless="${ section == '전체 상품' }">
 		<br>
-		<h3>침실</h3>
+		<h3>[[${ section }]]</h3>
 		<hr>
 		<div class="category">
 		<ul class="category-list">
-			<li>
-				<a th:href="@{/product/list?mainCategory=침대}" class="cate-item">
+			<li th:each="subCategory : ${subCategoryList}">
+				<a class="cate-item" th:href="@{/product/list(section=${subCategory.categoryName}, category=${subCategory.categoryNo})}" th:value="${subCategory.categoryNo}" >
 					<span class="cate-img"><img src="/image/sofa.jpg"></span>
-					<span class="cate-text">침대</span>
-				</a>
-			</li>
-			<li>
-				<a href=""  class="cate-item">
-					<span class="cate-img"><img src="/image/sofa.jpg"></span>
-					<span class="cate-text">매트리스</span>
-				</a>
-			</li>
-			<li>
-				<a href=""  class="cate-item">
-					<span class="cate-img"><img src="/image/sofa.jpg"></span>
-					<span class="cate-text">화장대/서랍</span>
+					<span class="cate-text"th:text="${subCategory.categoryName}"></span>
 				</a>
 			</li>
 		</ul>
 		</div>
-		
+	</div>
 		
 		<!-- <div class="filter filter-brand">
 			<ul>
@@ -66,7 +54,6 @@
 				</li>
 			</ul>
 		</div> -->
-	</th:block>
 	<div class="sorting">
 		<form id="sortingForm" name="sortingForm" class="sorting-form" th:object="${itemCriteria}" th:action="@{/product/list}" method="get">
 			<!--/* 폼 제출용 */-->

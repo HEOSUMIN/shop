@@ -55,5 +55,7 @@ public interface ProductService {
 	List<ProductDTO> getProductListByCategorySection(ItemCriteria itemCriteria);
 	
 	AttachmentDTO getMainThumbnailByProdNo(int prodNo);
+	
+	List<CategoryDTO> getSubCategoryList(int categoryNo);
 }
  

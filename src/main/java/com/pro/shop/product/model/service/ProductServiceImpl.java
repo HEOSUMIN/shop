@@ -119,11 +119,10 @@ public class ProductServiceImpl implements ProductService {
 		return productMapper.addNewBrand(brandName);
 	}
 
-
-
-	
-
-	
+	@Override
+	public List<CategoryDTO> getSubCategoryList(int categoryNo) {
+		return productMapper.getSubCategoryList(categoryNo);
+	}
 
 
 	
