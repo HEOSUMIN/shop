@@ -301,6 +301,8 @@ public class ProductController {
 			int roomNo = Integer.parseInt(itemCriteria.getCategory());
 			List<CategoryDTO> subCategoryList = productService.getMainCategoryList(roomNo);
 			model.addAttribute("subCategoryList", subCategoryList);
+			
+			log.info("subCategoryList : {}", subCategoryList);
 		}
 		
 		// 카테고리별 리스트 가져오기
@@ -322,9 +324,13 @@ public class ProductController {
 			
 		}
 		
+		int totNum = productService.getTotalNumberByCriteria(itemCriteria);
+		
+		
 		model.addAttribute("section", section == null || section == "" ? "전체 상품" : section);
 		model.addAttribute("productList", productList);
 		model.addAttribute("thumbnailList", thumbnailList);
+		model.addAttribute("totNum", totNum);
 	}
 	
 	

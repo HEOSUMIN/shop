@@ -166,6 +166,18 @@
 		 <include refid="dashboardProductSearch"/> -->
 	</select>
 	
+	<!-- 상품개수 조회 -->
+	<select id="getTotalNumberByCriteria" parameterType="com.pro.shop.paging.model.dto.ItemCriteria" resultType="_int">
+		SELECT COUNT(DISTINCT(A.PROD_NO)) 
+		  FROM TBL_PRODUCT A 
+		  LEFT JOIN TBL_CATEGORY B ON A.CATEGORY_NO = B.CATEGORY_NO 
+		  WHERE A.PROD_AVAIL_YN = 'Y'
+		<if test="category != null and category != ''">AND A.CATEGORY_NO IN (SELECT AA.CATEGORY_NO 
+																					FROM TBL_CATEGORY AA
+																					START WITH AA.CATEGORY_NO = #{ category }
+																					CONNECT BY PRIOR AA.CATEGORY_NO = AA.UP_CATEGORY_NO)</if>
+							
+	</select>
 	
 	<select id="getProductList" parameterType="com.pro.shop.paging.model.dto.Criteria" resultMap="productResultMap">
 	

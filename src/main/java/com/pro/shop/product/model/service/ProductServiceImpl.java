@@ -10,7 +10,6 @@ import com.pro.shop.paging.model.dto.ItemCriteria;
 import com.pro.shop.product.model.dao.ProductMapper;
 import com.pro.shop.product.model.dto.BrandDTO;
 import com.pro.shop.product.model.dto.CategoryDTO;
-import com.pro.shop.product.model.dto.MainCategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.dto.RoomsDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
@@ -122,6 +121,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<CategoryDTO> getSubCategoryList(int categoryNo) {
 		return productMapper.getSubCategoryList(categoryNo);
+	}
+
+	@Override
+	public int getTotalNumberByCriteria(ItemCriteria itemCriteria) {
+		return productMapper.getTotalNumberByCriteria(itemCriteria);
 	}
 
 
