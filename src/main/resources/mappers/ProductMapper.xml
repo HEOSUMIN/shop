@@ -175,8 +175,7 @@
 		<if test="category != null and category != ''">AND A.CATEGORY_NO IN (SELECT AA.CATEGORY_NO 
 																					FROM TBL_CATEGORY AA
 																					START WITH AA.CATEGORY_NO = #{ category }
-																					CONNECT BY PRIOR AA.CATEGORY_NO = AA.UP_CATEGORY_NO)</if>
-							
+																					CONNECT BY PRIOR AA.CATEGORY_NO = AA.UP_CATEGORY_NO) </if>
 	</select>
 	
 	<select id="getProductList" parameterType="com.pro.shop.paging.model.dto.Criteria" resultMap="productResultMap">

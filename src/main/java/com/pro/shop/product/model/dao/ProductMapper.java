@@ -56,4 +56,6 @@ public interface ProductMapper {
 	List<CategoryDTO> getSubCategoryList(int categoryNo);
 	
 	int getTotalNumberByCriteria(ItemCriteria itemCriteria);
+
+	
 }

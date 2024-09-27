@@ -59,12 +59,13 @@
               <li class="nav-item"><a th:href="@{/product/list}" class="head-menu nav-link link-secondary px-3 active" aria-current="page"><b>전체 상품</b></a></li>
               <li class="nav-item"><a th:href="@{/product/list?section=침실&category=2}" class="head-menu nav-link link-secondary px-3">침실</a></li>
               <li class="nav-item"><a th:href="@{/product/list?section=거실&category=3}" class="head-menu nav-link link-secondary px-3">거실</a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=주방&category=4}" class="head-menu nav-link link-secondary px-3">주방</a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=다이닝&category=5}" class="head-menu nav-link link-secondary px-3">다이닝</a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=욕실&category=6}" class="head-menu nav-link link-secondary px-3">욕실</a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=홈오피스&category=7}" class="head-menu nav-link link-secondary px-3">홈오피스</a></li>
-              <li class="nav-item"><a th:href="@{/product/list?section=어린이&category=8}" class="head-menu nav-link link-secondary px-3">어린이</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=다이닝&category=4}" class="head-menu nav-link link-secondary px-3">다이닝</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=옷장/드레스룸&category=5}" class="head-menu nav-link link-secondary px-3">옷장/드레스룸</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=키즈룸&category=6}" class="head-menu nav-link link-secondary px-3">키즈룸</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=학생룸&category=7}" class="head-menu nav-link link-secondary px-3">학생룸</a></li>
+              <li class="nav-item"><a th:href="@{/product/list?section=홈오피스&category=8}" class="head-menu nav-link link-secondary px-3">홈오피스</a></li>
               <li class="nav-item"><a th:href="@{/cs/main}" class="head-menu nav-link link-secondary px-3" style="color: #6c757d;">고객센터</a></li>
+              
             </ul>
             <form id="searchForm" name="searchForm" class="col-12 col-lg-auto mb-3 mb-lg-0 search-form" th:action="@{/product/search}" method="get" onsubmit="checkKeywordToSearch()">
                 <input type="search" name="keyword" class="form-control search-bar" autocomplete="off">

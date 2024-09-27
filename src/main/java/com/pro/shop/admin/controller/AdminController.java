@@ -1,5 +1,7 @@
 package com.pro.shop.admin.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 @SessionAttributes("loginMember")
 public class AdminController {
 	
-	@GetMapping("dashboard")
+	
+	@GetMapping("/dashboard")
 	public String getDashBoard(Model model) {
 		
 		return "admin/dashboard";
 	}
-	
 }
