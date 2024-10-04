@@ -107,6 +107,11 @@ public class ProductServiceImpl implements ProductService {
 	public AttachmentDTO getMainThumbnailByProdNo(int prodNo) {
 		return productMapper.getMainThumbnailByProdNo(prodNo);
 	}
+	
+	@Override
+	public AttachmentDTO getSubThumbnailByProdNo(int prodNo) {
+		return productMapper.getSubThumbnailByProdNo(prodNo);
+	}
 
 	@Override
 	public int checkBrandName(String brandName) {

@@ -13,6 +13,7 @@ public class ProductDTO {
 	private int prodNo;
 	private int categoryNo;
 	private int brandNo;
+	private String brandName;
 	private String prodName;
 	private String prodDesc;
 	private int prodPrice;			  //상품원가

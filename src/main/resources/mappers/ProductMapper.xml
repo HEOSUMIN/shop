@@ -7,6 +7,7 @@
 		<id property="prodNo" column="PROD_NO"/>
 		<result property="categoryNo" column="CATEGORY_NO"/>
 		<result property="brandNo" column="BRAND_NO"/>
+		<result property="brandName" column="BRAND_NAME"/>
 		<result property="prodName" column="PROD_NAME"/>
 		<result property="prodDesc" column="PROD_DESC"/>
 		<result property="discountRate" column="DISCOUNT_RATE"/>
@@ -186,6 +187,7 @@
 			A.PROD_NO DESC) RANK,
 			A.PROD_NO,
 			B.CATEGORY_NAME,
+			C.BRAND_NO,
 			C.BRAND_NAME,
 			A.PROD_NAME,
 			A.PROD_DESC,
@@ -305,6 +307,18 @@
 		   AND FILE_TYPE = 'THUMB_MAIN'
 		   AND REF_PROD_NO = #{ prodNo }
 	</select>
+
+	<!-- 상품별 서브썸네일 조회 -->
+	<select id="getSubThumbnailByProdNo" resultMap="thumbnailResultMap">
+		SELECT
+			   REF_PROD_NO
+			 , THUMBNAIL_PATH
+			 , SAVE_PATH
+		  FROM TBL_ATTACHMENT
+		 WHERE ATTACH_STATUS_YN = 'Y'
+		   AND FILE_TYPE = 'THUMB_SUB'
+		   AND REF_PROD_NO = #{ prodNo }
+	</select>
 	
 	<!-- 브랜드 추가 -->
 	<insert id="addNewBrand">
@@ -333,7 +347,7 @@
 			,PROD_DESC
 			,PROD_PRICE
 			,DISCOUNT_RATE
-			<!-- ,PROD_DETAIL_CONTENT -->
+			,PROD_DETAIL_CONTENT
 			,PROD_DETAIL_VIEW_COUNT
 			,PROD_INST_DATE
 			,PROD_UPT_DATE	
@@ -350,7 +364,7 @@
 		, #{ prodDesc }
 		, #{ prodPrice }
 		, #{ discountRate }
-	<!-- 	, #{ prodDetailContent } -->
+		, #{ prodDetailContent } 
 	 	, DEFAULT
 		, SYSDATE
 		, SYSDATE

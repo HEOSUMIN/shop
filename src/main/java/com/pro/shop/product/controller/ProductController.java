@@ -1,7 +1,10 @@
 package com.pro.shop.product.controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,9 +32,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import com.google.gson.JsonObject;
 import com.pro.shop.member.model.service.MemberService;
 import com.pro.shop.paging.model.dto.Criteria;
 import com.pro.shop.paging.model.dto.ItemCriteria;
@@ -41,6 +46,7 @@ import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.service.ProductService;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -141,8 +147,6 @@ public class ProductController {
 		MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
 		mv.setView(jsonView);
 		
-		
-		
 		/* 상품추가 */
 		//String categoryName = params.get("category").toString();
 		int categoryNo = Integer.parseInt(params.get("category").toString()) ;
@@ -152,7 +156,7 @@ public class ProductController {
 		String prodDesc = params.get("prodDesc").toString();
 		int prodPrice = Integer.parseInt(params.get("prodPrice").toString());
 		int discountRate = Integer.parseInt(params.get("discountRate").toString());
-		//String prodDetailContent = params.get("prodDetailContent").toString();
+		String prodDetailContent = params.get("prodDetailContent").toString();
 		String prodSize = params.get("prodSize").toString();
 		String prodColor = params.get("prodColor").toString();
 		
@@ -165,12 +169,12 @@ public class ProductController {
 		product.setProdDesc(prodDesc);
 		product.setProdPrice(prodPrice);
 		product.setDiscountRate(discountRate);
-		//product.setProdDetailContent(prodDetailContent);
+		product.setProdDetailContent(prodDetailContent);
 		product.setProdSize(prodSize);
 		product.setProdColor(prodColor);
 
 		//상품 정보 추가
-		int addresult = productService.addProduct(categoryNo, brandNo, prodName, prodDesc, prodPrice, discountRate, null, prodSize, prodColor);
+		int addresult = productService.addProduct(categoryNo, brandNo, prodName, prodDesc, prodPrice, discountRate, prodDetailContent, prodSize, prodColor);
 				
 		log.info("상품 insert end");
 		
@@ -262,6 +266,103 @@ public class ProductController {
 	}
 	
 	/*
+	 *  상품등록 상세내용 이미지(ckeditor)
+	 */
+	@PostMapping("/admin/product/add/contentImageUpload")
+	public void uploadProdContentImage(HttpServletRequest request, HttpServletResponse response, @RequestParam MultipartFile upload) {
+		OutputStream out = null; //지정된 공간에 이미지 파일들을 내보내기하여 저장
+		PrintWriter printWriter = null; //View에 띄워줄 구문 작성
+		
+		response.setCharacterEncoding("UTF-8"); //인코딩
+		response.setContentType("text/html; charset=UTF-8");
+		
+		AttachmentDTO attachment = new AttachmentDTO();
+		try {
+			String realPath = request.getSession().getServletContext().getRealPath("/");
+			log.info("src/main/webapp : {}", realPath);
+			String imageUploadPath = realPath + "upload" + File.separator + "product" + File.separator + "content";
+			File contentImageDirectory = new File(imageUploadPath);
+			if(!contentImageDirectory.exists()) { //지정 폴더가 존재하지 않을 시 생성
+				contentImageDirectory.mkdirs(); //thumbnail보다 content가 먼저 등록되므로 product/content 폴더를 연달아 생성하기 위해 mkdir()이 아닌 mkdirs()로 작성
+			}
+			
+			UUID uuid = UUID.randomUUID(); //랜덤 문자 생성
+			
+			byte[] bytes = upload.getBytes();
+			
+			String origFileName = upload.getOriginalFilename(); //원본파일명
+			String extension = FilenameUtils.getExtension(origFileName);
+			//int dot = origFileName.lastIndexOf(".");
+			//String ext = origFileName.substring(dot);
+			String saveFileName = imageUploadPath + File.separator + uuid.toString().replace("-", "") + "." + extension; //저장파일명
+			
+			//이미지 저장
+			out = new FileOutputStream(saveFileName);
+			out.write(bytes);
+			out.flush();
+			
+			//CKEditor로 전송
+			printWriter = response.getWriter();
+			String callback = request.getParameter("CKEditorFuncNum");
+			String fileUrl = "/upload/product/content/" + uuid.toString().replace("-", "") + "." + extension; //main 하위의 저장 경로 이름 따라서 file url 설정
+			
+			printWriter.println("<script type='text/javascript'>"
+					+ "window.parent.CKEDITOR.tools.callFunction("
+					+ callback + ",'" + fileUrl + "',' 이미지를 업로드하였습니다.')"
+					+"</script>");
+			printWriter.flush();
+			
+			//DB 전송
+			attachment.setOrigFileName(origFileName);
+			int getLastSeparator = saveFileName.lastIndexOf("\\");
+			attachment.setSaveFileName(saveFileName.substring(getLastSeparator));
+			attachment.setSavePath(fileUrl);
+			attachment.setThumbnailPath("NULL");
+			attachment.setFileType("CONTENT");
+			
+		//	productService.attachProdContentImage(attachment);
+		} catch(IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(out != null) { out.close(); }
+				if(printWriter != null) { printWriter.close(); }
+			} catch(IOException e) { e.printStackTrace(); }
+		}
+	}
+	
+	@GetMapping("/admin/product/edit")
+	public void editProductDetails(@RequestParam("no") int prodNo, Model model) {
+		/* 카테고리 목록 호출 */ 
+		List<CategoryDTO> category = productService.getCategoryList();
+		
+		/* 브랜드 목록 호출 */
+		List<BrandDTO> brand = productService.getBrandList();
+		
+		/* 상품 상세정보 호출 */ 
+		ProductDTO detail = productService.getProductDetails(prodNo);
+		
+		log.info("detail: {}", detail);
+		
+		
+		/* 상품 썸네일 조회 */
+		AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
+		AttachmentDTO subThumb = productService.getSubThumbnailByProdNo(prodNo);
+		
+		
+		model.addAttribute("category", category);
+		model.addAttribute("brand", brand);
+		model.addAttribute("detail", detail);
+		model.addAttribute("mainThumb", mainThumb);
+		model.addAttribute("subThumb", subThumb);
+		
+		
+	}
+	
+	
+	
+	
+	/*
 	 * 관리자 - 상품 목록 조회 
 	 */
 	@GetMapping("admin/product/list")
@@ -287,6 +388,8 @@ public class ProductController {
 		model.addAttribute("onSaleOnly", onSaleOnly);
 		
 	}
+	
+	
 	
 	/*
 	 * 상품 목록 
@@ -333,6 +436,24 @@ public class ProductController {
 		model.addAttribute("totNum", totNum);
 	}
 	
+	/*
+	 *  상품 상세 페이지
+	 */
+	@GetMapping("/product/details")
+	public void getProductDetails(@RequestParam("no") int prodNo, HttpSession session, Model model) {
+		
+		//상품정보 호출
+		ProductDTO detail = productService.getProductDetails(prodNo);
+		
+		AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
+		AttachmentDTO subThumb = productService.getSubThumbnailByProdNo(prodNo);
+		
+		model.addAttribute("detail", detail);
+		model.addAttribute("mainThumb", mainThumb);
+		model.addAttribute("subThumb", subThumb);
+		
+		
+	}
 	
 	
 }

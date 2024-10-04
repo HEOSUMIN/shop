@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -40,7 +41,8 @@ public class SecurityConfig {
 						.usernameParameter("username").passwordParameter("password"))
 				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/member/signout"))
 						.deleteCookies("JSESSIONID").invalidateHttpSession(true).logoutSuccessUrl("/"))
-				.exceptionHandling(ext->ext.accessDeniedPage("/common/denied"));
+				.exceptionHandling(ext->ext.accessDeniedPage("/common/denied"))
+				.headers(headerConfig->headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
 		return http.build();
 

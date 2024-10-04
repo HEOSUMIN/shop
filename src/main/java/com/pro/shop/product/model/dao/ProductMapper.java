@@ -53,6 +53,8 @@ public interface ProductMapper {
 	
 	AttachmentDTO getMainThumbnailByProdNo(int prodNo);
 	
+	AttachmentDTO getSubThumbnailByProdNo(int prodNo);
+	
 	List<CategoryDTO> getSubCategoryList(int categoryNo);
 	
 	int getTotalNumberByCriteria(ItemCriteria itemCriteria);

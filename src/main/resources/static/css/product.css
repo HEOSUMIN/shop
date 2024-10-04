@@ -48,6 +48,7 @@ ul{
 
 .infoBox {
 	float: right;
+	margin-right: 30px;
 	width: 50%;
 	font-size: 14px;
 }
@@ -61,8 +62,8 @@ ul{
 }
 
 .title-wrapper h2 {
-	font-size: 2.2rem !important;
-    font-weight: 900 !important;
+	font-size: 1.5rem !important;
+    font-weight: 700 !important;
 }
 
 .content-wrapper ul {

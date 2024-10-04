@@ -33,16 +33,14 @@
 			</div>
 		</div>
 	</div>
-		
-		
-		<!-- <div class="filter filter-brand">
-			<ul>
-				<li class="th"><p>브랜드</p></li>
-				<li class="td">
-					<span class="brand-span" th:each="brand : ${ brandBySection }" th:data-target="${ brand }"><a href="#">[[${ brand }]]</a></span>
-				</li>
-			</ul>
-		</div>-->
+	<!-- <div class="filter filter-brand">
+		<ul>
+			<li class="th"><p>브랜드</p></li>
+			<li class="td">
+				<span class="brand-span" th:each="brand : ${ brandBySection }" th:data-target="${ brand }"><a href="#">[[${ brand }]]</a></span>
+			</li>
+		</ul>
+	</div>-->
 	<div class="ui-component">
 		<div class="filter-wrap">
 			<ul class="filter-list">
@@ -134,7 +132,7 @@
 			                <!-- Product image-->
 			               <div class="card-img-wrapper" th:each="thumbnail : ${ thumbnailList }" th:if="${product.prodNo == thumbnail.refProdNo}">
 			                   <img class="card-img-top" th:src="${ thumbnail.thumbnailPath }">
-			               </div> -
+			               </div>
 			               <!-- Product details-->
 			               <div class="card-body">
 								<div class="text-left" th:value="${ product.prodPrice - (product.prodPrice * product.discountRate / 100) }">

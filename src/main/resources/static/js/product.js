@@ -180,8 +180,8 @@ function submitProductForm(){
 	let prodColor = document.getElementById('prodColor').value;
 	
 	//상세내용
-//	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
-//	console.log(prodDetailContent);
+	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
+	console.log(prodDetailContent);
 
 //FormData 객체 생성
 	let formData = new FormData();
@@ -204,7 +204,7 @@ function submitProductForm(){
 				 , prodPrice : prodPrice
 				 , prodSize : prodSize
 				 , prodColor : prodColor
-				// , prodDetailContent : prodDetailContent
+				 , prodDetailContent : prodDetailContent
 				 };
 	
 	formData.append("params", new Blob([JSON.stringify(params)], {type : 'application/json'}));
