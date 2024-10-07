@@ -20,6 +20,7 @@ public interface ProductMapper {
 	List<CategoryDTO> getMainCategoryList(int roomNo);
 	
 	List<CategoryDTO> getCategoryList();
+	
 	int checkCategoryNo(String categoryName);
 	
 	
@@ -33,6 +34,10 @@ public interface ProductMapper {
 	
 	int addProduct(	int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
+	
+	int eidtProduct(int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
+			String prodDetailContent,String prodSize ,String prodColor);
+	
 	
 	int checkCurrProdNo();
 	
@@ -58,6 +63,8 @@ public interface ProductMapper {
 	List<CategoryDTO> getSubCategoryList(int categoryNo);
 	
 	int getTotalNumberByCriteria(ItemCriteria itemCriteria);
+	
+	List<CategoryDTO> getUpCategoryList(int categoryNo);
 
 	
 }

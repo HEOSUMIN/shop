@@ -28,7 +28,7 @@
 							<option th:each="category : ${ category }" th:if="${category.depth == 1}" th:value="${category.categoryNo }" th:text="${ category.categoryName }"></option>
 						</select>
 						<select id="mainCategoryName" name="mainCategoryName" class="dataTable-selector selector" onchange="mainCategory();">
-							 <option selected disabled hidden>선택</option>
+							 <option  selected disabled hidden>선택</option>
 						</select>
 						<select id="subCategoryName" name="subCategoryName" class="dataTable-selector selector">
 							 <option selected disabled hidden>선택</option>

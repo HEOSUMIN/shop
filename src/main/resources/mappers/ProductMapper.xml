@@ -89,6 +89,21 @@
 			PRIOR CATEGORY_NO = UP_CATEGORY_NO
 	</select>
 	
+	<!-- 하위 카테고리에 따른 상위 목록 조회 -->
+	<select id="getUpCategoryList" parameterType="int" resultMap="categoryResultMap">
+		SELECT 
+				CATEGORY_NO
+				,UP_CATEGORY_NO
+				,CATEGORY_NAME
+				,DEPTH
+				,SORT
+		  FROM TBL_CATEGORY
+		 WHERE UP_CATEGORY_NO IS NOT NULL
+		START WITH CATEGORY_NO = #{categoryNo}
+		CONNECT BY CATEGORY_NO = PRIOR UP_CATEGORY_NO
+	</select>
+	
+	
 	<!-- 카테고리 목록 조회 -->
 	<select id="getCategoryList" resultMap="categoryResultMap">
 		SELECT
@@ -113,7 +128,6 @@
 		  FROM TBL_CATEGORY
 		 WHERE CATEGORY_NAME = #{ categoryName }
 	</select>
-	
 	
 	<!-- 브랜드 목록 조회 -->
 	<select id="getBrandList" resultMap="brandResultMap">
@@ -248,15 +262,17 @@
 	<select id="getProductDetails" resultMap="productResultMap">
 		SELECT
 			   A.PROD_NO
+			 , B.CATEGORY_NO
 			 , B.CATEGORY_NAME
 			 , C.BRAND_NAME
+			 , C.BRAND_NO
 			 , A.PROD_NAME
 			 , A.PROD_DESC
 			 , A.DISCOUNT_RATE
 			 , A.PROD_PRICE
 			 , A.PROD_DETAIL_CONTENT
 			 , A.PROD_DETAIL_VIEW_COUNT
-			 , A. PROD_INST_DATE
+			 , A.PROD_INST_DATE
 			 , A.PROD_UPT_DATE
 			 , A.PROD_AVAIL_YN
 			 , A.PROD_SIZE
@@ -374,7 +390,6 @@
 		)
 	</insert>
 	
-	
 	<!-- 상품 썸네일 등록 -->
 	<insert id="attachProdThumbnail">
 		INSERT
@@ -405,5 +420,40 @@
 		, DEFAULT
 		)
 	</insert>
+	
+	
+	<!-- 상품 수정 -->
+	<update id="editProduct">
+		UPDATE TBL_PRODUCT
+			SET CATEGORY_NO = #{categoryNo}
+				, BRAND_NO = #{brandNo}
+				, PROD_NAME = #{prodName}
+				, PROD_DESC = #{prodDesc}
+				, PROD_PRICE = #{prodPrice}
+				, DISCOUNT_RATE = #{discountRate}
+				, PROD_DETAIL_CONTENT = #{prodDetailContent}
+				, PROD_UPT_DATE = SYSDATE 
+				, PROD_SIZE = #{prodSize}
+				, PROD_COLOR = #{prodColor}
+			WHERE PROD_NO = #{ prodNo }
+	</update>
+	<!-- 
+	
+	상품 썸네일 수정
+	<insert id="eidtAttachProdThumbnail">
+		UPDATE TBL_ATTACHMENT
+			SET CATEGORY_NO = #{categoryNo}
+				, BRAND_NO = #{brandNo}
+				, PROD_NAME = #{prodName}
+				, PROD_DESC = #{prodDesc}
+				, PROD_PRICE = #{prodPrice}
+				, DISCOUNT_RATE = #{discountRate}
+				, PROD_DETAIL_CONTENT = #{prodDetailContent}
+				, PROD_UPT_DATE = SYSDATE 
+				, PROD_SIZE = #{prodSize}
+				, PROD_COLOR = #{prodColor}
+			WHERE ATTACHMENT_NO = #{ prodNo }
+			
+	</insert> -->
 	
 </mapper>

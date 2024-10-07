@@ -134,7 +134,19 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 
+	@Override
+	public List<CategoryDTO> getUpCategoryList(int categoryNo) {
+		return productMapper.getUpCategoryList(categoryNo);
+	}
 
+	@Override
+	public int editProduct(int categoryNo, int brandNo, String prodName, String prodDesc, int prodPrice,
+			int discountRate, String prodDetailContent, String prodSize, String prodColor) {
+		int result = productMapper.eidtProduct(categoryNo, brandNo, prodName, prodDesc, 
+				prodPrice,discountRate,prodDetailContent,prodSize,prodColor);
+		
+		return result;
+	}
 
 	
 	

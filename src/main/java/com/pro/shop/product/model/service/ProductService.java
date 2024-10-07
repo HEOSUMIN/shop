@@ -25,7 +25,10 @@ public interface ProductService {
 	
 	int addNewBrand(String brandName);
 	
-	int addProduct(	int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
+	int addProduct(int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
+			String prodDetailContent,String prodSize ,String prodColor);
+	
+	int editProduct(int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
 	
 	int checkCategoryNo(String categoryName);
@@ -61,6 +64,8 @@ public interface ProductService {
 	AttachmentDTO getSubThumbnailByProdNo(int prodNo);
 	
 	List<CategoryDTO> getSubCategoryList(int categoryNo);
+
+	List<CategoryDTO> getUpCategoryList(int categoryNo);
 
 	
 

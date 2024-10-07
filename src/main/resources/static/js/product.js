@@ -251,9 +251,115 @@ function submitProductForm(){
 				}
 			},
 			error : function(status, error){ console.log(status, error); }
-		});
+	});
+}
+
+
+/* 상품수정 폼 제출 */
+function submitEditProdForm(){
 	
-		
+	//카테고리 
+	let category = document.getElementById('subCategoryName').value;
+
+	//브랜드
+	let brand = document.getElementById('brandName').value;
+	if(brand == 'etc') {
+		brand = document.getElementById('addNewBrand').value;
+	}
 	
+	//상품명 
+	let prodName = document.getElementById("prodName").value;
+	
+	//상품 설명 
+	let prodDesc = document.getElementById('prodDesc').value;
+	
+	//할인율
+	let discountRate = document.getElementById('discount').value;
+	console.log(discountRate);
+	
+	//원가
+	let prodPrice = document.getElementById('prodPrice').value;
+	
+	//규격 
+	let prodSize = document.getElementById('prodSize').value;
+	
+	//색상 
+	let prodColor = document.getElementById('prodColor').value;
+	
+	//상세내용
+	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
+	console.log(prodDetailContent);
+
+//FormData 객체 생성
+	let formData = new FormData();
+	
+	let attached = $('.files');
+	console.log(attached.length);
+	for(let i=0; i < attached.length; i++) {
+		if(attached[i].files.length > 0) {
+			for(let j=0; j < attached[i].files.length; j++) {
+				formData.append("files", $('.files')[i].files[j]);
+			}
+		}
+	}
+
+	let params = { category : category
+				 , brand : brand
+				 , prodName : prodName
+				 , prodDesc : prodDesc
+				 , discountRate : discountRate
+				 , prodPrice : prodPrice
+				 , prodSize : prodSize
+				 , prodColor : prodColor
+				 , prodDetailContent : prodDetailContent
+				 };
+	
+	formData.append("params", new Blob([JSON.stringify(params)], {type : 'application/json'}));
+	
+	
+	for( let value of formData.values()){
+		console.log(value);
+	}
+	
+	$.ajax({
+			url : '/admin/product/edit',
+			data : formData,
+			processData: false,
+			contentType: false,
+			enctype: 'multipart/form-data',
+			type : 'post',
+			traditional : true,
+			success : function(data){
+				if(data.errorMessage) {
+					Swal.fire({
+						icon: 'error',
+						title: data.errorMessage,
+						confirmButtonColor: '#00008b',
+						confirmButtonText: '확인'
+					}).then((result) => {
+						if(result.isConfirmed) {
+							return;
+						}
+					})
+				}
+				
+				if(data.successMessage) {
+					Swal.fire({
+						icon: 'success',
+						title: data.successMessage,
+						confirmButtonColor: '#00008b',
+						confirmButtonText: '확인'
+					}).then((result) => {
+						if(result.isConfirmed) {
+							window.location.reload(); //페이지 새로고침
+							window.history.scrollRestoration = 'manual'; //스크롤 최상단 고정
+						}
+					})
+				}
+			},
+			error : function(status, error){ console.log(status, error); }
+	});
 
 }
+
+
