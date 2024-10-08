@@ -258,6 +258,9 @@ function submitProductForm(){
 /* 상품수정 폼 제출 */
 function submitEditProdForm(){
 	
+	//상품번호 
+	let prodNo = document.getElementById('prodNo').value;
+	
 	//카테고리 
 	let category = document.getElementById('subCategoryName').value;
 
@@ -303,7 +306,8 @@ function submitEditProdForm(){
 		}
 	}
 
-	let params = { category : category
+	let params = { prodNo : prodNo
+				 , category : category
 				 , brand : brand
 				 , prodName : prodName
 				 , prodDesc : prodDesc

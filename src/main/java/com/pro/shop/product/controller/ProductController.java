@@ -378,6 +378,7 @@ public class ProductController {
 		
 		/* 상품추가 */
 		//String categoryName = params.get("category").toString();
+		int prodNo = Integer.parseInt(params.get("prodNo").toString()) ;
 		int categoryNo = Integer.parseInt(params.get("category").toString()) ;
 		String brandName =  params.get("brand").toString();
 		int brandNo = productService.checkBrandNo(brandName);
@@ -392,6 +393,7 @@ public class ProductController {
 	
 		//ProductDTO 객체에 값으로 설정
 		ProductDTO product = new ProductDTO();
+		product.setProdNo(prodNo);
 		product.setCategoryNo(categoryNo);
 		product.setBrandNo(brandNo);
 		product.setProdName(prodName);
@@ -403,11 +405,11 @@ public class ProductController {
 		product.setProdColor(prodColor);
 
 		//상품 정보 추가
-		int editresult = productService.editProduct(categoryNo, brandNo, prodName, prodDesc, prodPrice, discountRate, prodDetailContent, prodSize, prodColor);
+		int editresult = productService.editProduct(prodNo, categoryNo, brandNo, prodName, prodDesc, prodPrice, discountRate, prodDetailContent, prodSize, prodColor);
 				
 		log.info("상품 update end");
 		
-
+/*
 		String realPath = request.getSession().getServletContext().getRealPath("/");
 		log.info("src/main/webapp : {}", realPath);
 		
@@ -482,7 +484,7 @@ public class ProductController {
 				productService.attachProdThumbnail(tempFileInfo);
 			} catch (IOException e) { e.printStackTrace(); }
 		}
-		
+		*/
 		if(editresult == 1) {
 			/* 수정 성공 메세지 띄기 */
 		} else {

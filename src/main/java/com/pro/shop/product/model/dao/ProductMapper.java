@@ -35,7 +35,7 @@ public interface ProductMapper {
 	int addProduct(	int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
 	
-	int eidtProduct(int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
+	int editProduct(int prodNo, int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
 	
 	

@@ -19,7 +19,7 @@
 		<div th:replace="/fragments/toolbar.html :: productToolbar" style="text-align: center;"></div>
 	</th:block> -->
 		<div class="infoBox">
-			<form>
+			<form id="editForm" name="editForm" class="edit-form" th:action="@{/admin/product/edit}" method="post" enctype="multipart/form-data">
 				<ul>
 					<li class="th"><p>판매여부</p></li>
 					<li class="td" th:switch="${ detail.prodAvailYn }">
@@ -83,6 +83,18 @@
 							<option value="etc">새 브랜드 추가</option>
 						</select>
 						<input type="text" id="addNewBrand" name="addNewBrand" disabled>
+					</li>
+				</ul>
+				<ul>
+					<li class="th"><p>상품 규격</p></li>
+					<li class="td">
+						<input type="text" id="prodSize" name="prodSize" th:value ="${detail.prodSize}" >
+					</li>
+				</ul>				
+				<ul>
+					<li class="th"><p>상품 색상</p></li>
+					<li class="td">
+						<input type="text" id="prodColor" name="prodColor" th:value ="${detail.prodColor}">
 					</li>
 				</ul>
    				<div class="contentBox">
