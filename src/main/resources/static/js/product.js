@@ -28,7 +28,6 @@ function reselectImage() {
 };
 
 
-
 /* room 분류 변경 시  */
 function roomCategory(){
 	let roomNo = document.getElementById('roomCategoryName').value;
@@ -144,6 +143,71 @@ function addABrand(){
 }
 
 
+/* 옵션 행 추가 */
+$('#addRow').on('click', function(){ //상품 등록
+	  let table_body = document.getElementById('table_body');
+	    let first_tr   = table_body.firstElementChild;
+	    let tr_clone   = first_tr.cloneNode(true);//*1)복제된 node 반환
+
+	    table_body.append(tr_clone);
+	    clean_first_tr(table_body.firstElementChild);
+	
+});
+
+/* 옵션 행 삭제 */
+$('#delRow').on('click', function(){ //상품 등록
+	
+	var checkRows = $("[name='chkbox']:checked");
+	
+	for(var i=checkRows.length-1; i>-1; i--){
+ 		checkRows.eq(i).closest('tr').remove();
+	}
+	
+});
+
+/* 금액입력시 (숫자, 콤마) */ 
+function onlyNumberWithComma(obj) {
+  obj.value = Number(obj.value.replace(/[^0-9]/g,'')).toLocaleString();
+}
+
+/*  */
+
+$('#test').on('click', function(){ 
+
+
+	let optionCtgryNoArr = new Array();
+	let optionValueArr = new Array();
+	let optionExtChrgArr = new Array();
+	let optArr = new Array();
+		
+	for(var i=0; i< $('#table_body tr').length; i++){
+		
+		var tr =  $('#table_body tr').eq(i);
+		var td = tr.children();
+		
+		var optionCtgryNo = td.eq(1).find('select[name="optionCategoryNo"] option:selected').val(); //옵션명
+		var optionValue = td.eq(2).find('input[type="text"]').val();								//옵션값
+		var optionExtChrg = td.eq(3).find('input[type="text"]').val();								//옵션추가금액
+			
+		optionCtgryNoArr.push(optionCtgryNo);
+		optionValueArr.push(optionValue);
+		optionExtChrgArr.push(optionExtChrg);
+		
+		optArr.push({ optionCtgryNoArr : optionCtgryNo,
+			optionValueArr : optionValue,
+			optionExtChrgArr : optionExtChrg
+		});
+	}
+	
+	console.log(optionCtgryNoArr);
+	console.log(optArr);
+	
+	
+
+});
+
+
+
 
 /* 상품등록 폼 제출 */
 function submitProductForm(){
@@ -179,11 +243,48 @@ function submitProductForm(){
 	//색상 
 	let prodColor = document.getElementById('prodColor').value;
 	
+	//옵션
+	let optionCtgryNoArr = new Array();
+	let optionValueArr = new Array();
+	let optionExtChrgArr = new Array();
+	let optArr = new Array();
+		
+	for(var i=0; i< $('#table_body tr').length; i++){
+		
+		var tr =  $('#table_body tr').eq(i);
+		var td = tr.children();
+		
+		var optionCtgryNo = td.eq(1).find('select[name="optionCategoryNo"] option:selected').val(); //옵션명
+		var optionValue = td.eq(2).find('input[type="text"]').val();								//옵션값
+		var optionExtChrg = td.eq(3).find('input[type="text"]').val();								//옵션추가금액
+		
+		alert(optionCtgryNo+"    "+optionValue+"     "+optionExtChrg);
+		optionCtgryNoArr.push(optionCtgryNo);
+		optionValueArr.push(optionValue);
+		optionExtChrgArr.push(optionExtChrg);
+		
+		optArr.push({ optionCtgryNoArr : optionCtgryNo,
+			optionValueArr : optionValue,
+			optionExtChrgArr : optionExtChrg
+		});
+	}
+
+	console.log(optionCtgryNoArr);
+	console.log(optArr);
+	
+	
+	
+	
+	
+	
+	
 	//상세내용
 	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
 	console.log(prodDetailContent);
-
-//FormData 객체 생성
+	
+	
+	
+	//FormData 객체 생성
 	let formData = new FormData();
 	
 	let attached = $('.files');
@@ -205,6 +306,10 @@ function submitProductForm(){
 				 , prodSize : prodSize
 				 , prodColor : prodColor
 				 , prodDetailContent : prodDetailContent
+				 , optionCtgryNoArr : optionCtgryNoArr
+				 , optionValueArr : optionValueArr
+				 , optionExtChrgArr : optionExtChrgArr
+				 , optArrLength : optArr.length
 				 };
 	
 	formData.append("params", new Blob([JSON.stringify(params)], {type : 'application/json'}));
@@ -293,10 +398,10 @@ function submitEditProdForm(){
 	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
 	console.log(prodDetailContent);
 
-//FormData 객체 생성
+	//FormData 객체 생성
 	let formData = new FormData();
 	
-	let attached = $('.files');
+	let attached = $('. v');
 	console.log(attached.length);
 	for(let i=0; i < attached.length; i++) {
 		if(attached[i].files.length > 0) {

@@ -16,6 +16,19 @@ ul{
 	padding-inline-start: 0;
 }
 
+.tab-content{
+	padding : 40px 0 0 0;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -104,13 +117,13 @@ ul{
 
 #infoTab > .nav-item > .nav-link.active {
 	border: 0;
-	border-bottom: 2px solid #000;
+	border-bottom: 2px solid #343a40;
 	color: #000;
 }
 
 #infoTab > li > button {
 	width: 100%;
-	font-size: 22px;
+	font-size: 18px;
 	font-weight: bold;
 	margin: 0 auto;
 	border: 0;

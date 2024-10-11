@@ -9,6 +9,7 @@ import com.pro.shop.product.model.dto.CategoryDTO;
 import com.pro.shop.product.model.dto.MainCategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.dto.RoomsDTO;
+import com.pro.shop.product.model.dto.OptionCategoryDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 public interface ProductService {
@@ -19,6 +20,8 @@ public interface ProductService {
 	
 	List<CategoryDTO> getCategoryList();
 	
+	List<OptionCategoryDTO> getOptCategoryList();
+	
 	List<BrandDTO> getBrandList();
 	
 	int checkBrandName(String brandName);
@@ -27,6 +30,8 @@ public interface ProductService {
 	
 	int addProduct(int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
+	
+	int addProductOption(String optionCtgryNo, String optionValue, int optionExtChrg);
 	
 	int editProduct(int prodNo, int categoryNo, int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);

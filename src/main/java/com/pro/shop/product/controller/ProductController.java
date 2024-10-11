@@ -42,8 +42,11 @@ import com.pro.shop.paging.model.dto.Criteria;
 import com.pro.shop.paging.model.dto.ItemCriteria;
 import com.pro.shop.product.model.dto.BrandDTO;
 import com.pro.shop.product.model.dto.CategoryDTO;
+import com.pro.shop.product.model.dto.OptionCategoryDTO;
+import com.pro.shop.product.model.dto.OptionDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.service.ProductService;
+import com.pro.shop.review.model.dto.ReviewDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 import io.micrometer.common.util.StringUtils;
@@ -85,6 +88,11 @@ public class ProductController {
 		
 		List<BrandDTO> brand = productService.getBrandList();
 		model.addAttribute("brand", brand);
+		
+		List<OptionCategoryDTO> optCategory = productService.getOptCategoryList();
+		model.addAttribute("optCategory", optCategory);
+		
+		
 	}
 	
 	
@@ -160,7 +168,7 @@ public class ProductController {
 		String prodSize = params.get("prodSize").toString();
 		String prodColor = params.get("prodColor").toString();
 		
-	
+
 		//ProductDTO 객체에 값으로 설정
 		ProductDTO product = new ProductDTO();
 		product.setCategoryNo(categoryNo);
@@ -175,13 +183,34 @@ public class ProductController {
 
 		//상품 정보 추가
 		int addresult = productService.addProduct(categoryNo, brandNo, prodName, prodDesc, prodPrice, discountRate, prodDetailContent, prodSize, prodColor);
-				
 		log.info("상품 insert end");
 		
-
+		/* 상품 옵션 추가 */
+		String[] optionCtgryNoArr = params.get("optionCtgryNoArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");	//옵션명
+		String[] optionValueArr = params.get("optionValueArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");		//옵션값
+		String[] optionExtChrgArr = params.get("optionExtChrgArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");	//옵션추가금액
+		
+		int totalOptionNumber = Integer.parseInt(params.get("optArrLength").toString());
+		
+		OptionDTO option = new OptionDTO();
+		for(int i=0; i<totalOptionNumber; i++) {
+			
+			String optionCtgryNo = optionCtgryNoArr[i].toString();
+			String optionValue = optionValueArr[i].toString();
+			int optionExtChrg = Integer.parseInt(optionExtChrgArr[i]); 
+			
+			option.setOptionCategoryNo(optionCtgryNo);
+			option.setOptionValue(optionValue);
+			option.setOptionExtChrg(optionExtChrg);
+			
+			productService.addProductOption(option.getOptionCategoryNo(), option.getOptionValue(), option.getOptionExtChrg());
+		}
+	
+		log.info("상품 옵션 insert end");
+		
+		/* 썸네일 추가 */
 		String realPath = request.getSession().getServletContext().getRealPath("/");
 		log.info("src/main/webapp : {}", realPath);
-		
 		
 		String originalUploadPath = realPath + "upload" + File.separator + "product" + File.separator + "original";
 		String thumbnailUploadPath = realPath + "upload" + File.separator + "product" + File.separator + "thumbnail";
@@ -553,6 +582,7 @@ public class ProductController {
 			ProductDTO productDTO = productService.getProductDetails(prodNo);
 			productList.add(productDTO);
 		}
+		log.info("productList : {}", productList);
 		
 		List<AttachmentDTO> thumbnailList = new ArrayList<>();
 		for(int i=0; i<productList.size(); i++) {
@@ -563,6 +593,8 @@ public class ProductController {
 		}
 		
 		int totNum = productService.getTotalNumberByCriteria(itemCriteria);
+		
+		log.info("thumbnailList : {}", thumbnailList);
 		
 		
 		model.addAttribute("section", section == null || section == "" ? "전체 상품" : section);
@@ -580,12 +612,19 @@ public class ProductController {
 		//상품정보 호출
 		ProductDTO detail = productService.getProductDetails(prodNo);
 		
+		/* 상품별 리뷰 목록 조회 */
+//		List<ReviewDTO> reviewList = productService.getReviewListByProdNo(prodNo); //첨부파일 포함 리뷰 
+		
 		AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
 		AttachmentDTO subThumb = productService.getSubThumbnailByProdNo(prodNo);
 		
+		
+		
 		model.addAttribute("detail", detail);
+	//
 		model.addAttribute("mainThumb", mainThumb);
 		model.addAttribute("subThumb", subThumb);
+		
 		
 		
 	}

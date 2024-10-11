@@ -12,6 +12,7 @@ import com.pro.shop.product.model.dto.BrandDTO;
 import com.pro.shop.product.model.dto.CategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.dto.RoomsDTO;
+import com.pro.shop.product.model.dto.OptionCategoryDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 @Service("productService")
@@ -144,6 +145,18 @@ public class ProductServiceImpl implements ProductService {
 			int discountRate, String prodDetailContent, String prodSize, String prodColor) {
 		int result = productMapper.editProduct(prodNo, categoryNo, brandNo, prodName, prodDesc, 
 				prodPrice,discountRate,prodDetailContent,prodSize,prodColor);
+		
+		return result;
+	}
+
+	@Override
+	public List<OptionCategoryDTO> getOptCategoryList() {
+		return productMapper.getOptCategoryList();
+	}
+
+	@Override
+	public int addProductOption(String optionCtgryNo, String optionValue, int optionExtChrg) {
+		int result = productMapper.addProductOption(optionCtgryNo, optionValue, optionExtChrg);
 		
 		return result;
 	}

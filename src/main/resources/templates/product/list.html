@@ -130,7 +130,7 @@
 			        <div class="card" th:data-id="|{product.brand.brandName}$${product.category.categoryName}|">
 			            <a th:href="@{/product/details(no=${product.prodNo})}">
 			                <!-- Product image-->
-			               <div class="card-img-wrapper" th:each="thumbnail : ${ thumbnailList }" th:if="${product.prodNo == thumbnail.refProdNo}">
+			               <div class="card-img-wrapper" th:each="thumbnail : ${ thumbnailList }" th:if="${product?.prodNo == thumbnail?.refProdNo}">
 			                   <img class="card-img-top" th:src="${ thumbnail.thumbnailPath }">
 			               </div>
 			               <!-- Product details-->

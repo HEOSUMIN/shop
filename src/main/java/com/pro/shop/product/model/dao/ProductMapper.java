@@ -10,6 +10,7 @@ import com.pro.shop.product.model.dto.BrandDTO;
 import com.pro.shop.product.model.dto.CategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.dto.RoomsDTO;
+import com.pro.shop.product.model.dto.OptionCategoryDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 @Mapper
@@ -23,6 +24,8 @@ public interface ProductMapper {
 	
 	int checkCategoryNo(String categoryName);
 	
+	List<OptionCategoryDTO> getOptCategoryList();
+	
 	
 	List<BrandDTO> getBrandList();
 	
@@ -34,6 +37,8 @@ public interface ProductMapper {
 	
 	int addProduct(	int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
+	
+	int addProductOption(String optionCtgryNo, String optionValue, int optionExtChrg);
 	
 	int editProduct(int prodNo, int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
