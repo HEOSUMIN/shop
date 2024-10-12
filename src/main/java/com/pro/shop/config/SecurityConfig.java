@@ -35,6 +35,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(
 						auto -> auto.requestMatchers("/", "/member/**").permitAll()
 						.requestMatchers("/admin/**").permitAll()
+						.requestMatchers("/member/mypage").hasAnyRole("MEMBER", "ADMIN")
 						.anyRequest().permitAll())
 				.formLogin(formLogin -> formLogin.loginPage("/member/signin").defaultSuccessUrl("/")
 						.successHandler(loginSuccessHandler).failureHandler(loginFailureHandler)

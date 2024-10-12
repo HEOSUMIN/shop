@@ -121,14 +121,11 @@ public class ProductController {
 		
 		//중복검사 
 		String brandName = param.get("brand").replaceAll("\\s","");
-		log.info(brandName);
-		
 		int brandCount = productService.checkBrandName(brandName);
 		
 		if(brandCount > 0) {
 			String errorMessage = messageSource.getMessage("errorWhileAddingANewBrand", null, locale);
 			mv.addObject("errorMessage", errorMessage);
-			log.info(errorMessage);
 		}
 		
 		//새 브랜드 추가
@@ -371,6 +368,10 @@ public class ProductController {
 		/* 브랜드 목록 호출 */
 		List<BrandDTO> brand = productService.getBrandList();
 		
+		/* 옵션 카테고리 목록 호출 */
+		List<OptionCategoryDTO> optCategory = productService.getOptCategoryList();
+		model.addAttribute("optCategory", optCategory);
+		
 		/* 상품 상세정보 호출 */ 
 		ProductDTO detail = productService.getProductDetails(prodNo);
 		
@@ -378,14 +379,23 @@ public class ProductController {
 		int categoryNo = detail.getCategoryNo();
 		List<CategoryDTO> productCategory = productService.getUpCategoryList(categoryNo);
 		
+		/* 상품별 옵션 호출 */ 
+		List<OptionDTO> option = productService.getOptionListByProdNo(prodNo);
+		
+		/* 옵션 개수 */ 
+		int optionCnt = option.size();
+		
 		/* 상품 썸네일 조회 */
 		AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
 		AttachmentDTO subThumb = productService.getSubThumbnailByProdNo(prodNo);
 		
 		model.addAttribute("category", category);
-		model.addAttribute("productCategory", productCategory);
 		model.addAttribute("brand", brand);
 		model.addAttribute("detail", detail);
+		model.addAttribute("productCategory", productCategory);
+		model.addAttribute("optCategory", optCategory);
+		model.addAttribute("option", option);
+		model.addAttribute("optionCnt", optionCnt);
 		model.addAttribute("mainThumb", mainThumb);
 		model.addAttribute("subThumb", subThumb);
 		
@@ -435,92 +445,46 @@ public class ProductController {
 
 		//상품 정보 추가
 		int editresult = productService.editProduct(prodNo, categoryNo, brandNo, prodName, prodDesc, prodPrice, discountRate, prodDetailContent, prodSize, prodColor);
-				
 		log.info("상품 update end");
 		
-/*
-		String realPath = request.getSession().getServletContext().getRealPath("/");
-		log.info("src/main/webapp : {}", realPath);
+	
+		int totalOptionNumber = Integer.parseInt(params.get("optArrLength").toString());
+	
+		//상품별 옵션 전체 삭제 
+		productService.deleteOption(prodNo);
+		log.info("상품 delete end");
 		
+		/* 상품 옵션 재추가 */
+		String[] optionCtgryNoArr = params.get("optionCtgryNoArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");	//옵션명
+		String[] optionValueArr = params.get("optionValueArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");		//옵션값
+		String[] optionExtChrgArr = params.get("optionExtChrgArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");	//옵션추가금액
 		
-		String originalUploadPath = realPath + "upload" + File.separator + "product" + File.separator + "original";
-		String thumbnailUploadPath = realPath + "upload" + File.separator + "product" + File.separator + "thumbnail";
-		File originalDirectory = new File(originalUploadPath);
-		File thumbnailDirectory = new File(thumbnailUploadPath);
-		
-		if(!originalDirectory.exists() || !thumbnailDirectory.exists()) { //지정 폴더가 존재하지 않을 시 생성
-			originalDirectory.mkdirs(); //생성할 폴더가 하나이면 mkdir, 상위 폴더도 존재하지 않으면 한 번에 생성하란 의미로 mkdirs를 이용
-			thumbnailDirectory.mkdirs();
+		OptionDTO option = new OptionDTO();
+		for(int i=0; i<totalOptionNumber; i++) {
+			
+			String optionCtgryNo = optionCtgryNoArr[i].toString();
+			String optionValue = optionValueArr[i].toString();
+			int optionExtChrg = Integer.parseInt(optionExtChrgArr[i]); 
+	
+			log.info("prodNo : {}", prodNo);
+			option.setRefProdNo(prodNo);
+			option.setOptionCategoryNo(optionCtgryNo);
+			option.setOptionValue(optionValue);
+			option.setOptionExtChrg(optionExtChrg);
+			
+			productService.editProductOption(option.getRefProdNo(), option.getOptionCategoryNo(), option.getOptionValue(), option.getOptionExtChrg());
 		}
-		
-		Map<String, String> fileMap = new HashMap<>();
-		List<Map<String, String>> fileList = new ArrayList<>();
-		
-		log.info("files : {}", files);
-		
-		for(MultipartFile file : files) {
-			UUID uuid = UUID.randomUUID(); //랜덤 문자 생성
+	
+		log.info("상품 옵션 insert end");
 			
-			String origFileName = file.getOriginalFilename(); //원본파일명
-			
-			String extension = FilenameUtils.getExtension(origFileName); //확장자
-			String randomFileName = uuid.toString().replace("-", "") + "." + extension; //랜덤파일명
-			
-			try {
-				//원본 크기 파일을 original 폴더에 저장
-				File target = new File(originalUploadPath, randomFileName);
-				byte[] bytes = file.getBytes();
-				FileCopyUtils.copy(bytes, target);
-				
-				String origFileUrl = "/upload/product/original/" + uuid.toString().replace("-", "") + "." + extension;
-				fileMap.put("origFileName", origFileName);
-				fileMap.put("saveFileName", randomFileName);
-				fileMap.put("savePath", origFileUrl);
-				
-				//썸네일 파일을 thumbnail 폴더에 저장
-				Thumbnails.of(originalUploadPath + File.separator + randomFileName) //썸네일로 변환 후 저장
-						  .size(THUMB_WIDTH_SIZE, THUMB_HEIGHT_SIZE)
-						  .toFile(thumbnailUploadPath + File.separator + "thumbnail_" + randomFileName);
-				fileMap.put("thumbnailPath", "/upload/product/thumbnail/thumbnail_" + randomFileName); //웹서버에서 접근 가능한 형태로 썸네일의 저장 경로 작성
-				
-				fileList.add(fileMap);
-				
-				//현재 상품번호 조회
-				int currProdNo = productService.checkCurrProdNo();
-				
-				//product 객체의 AttachmentList 설정
-				product.setAttachmentList(new ArrayList<AttachmentDTO>());
-				List<AttachmentDTO> list = product.getAttachmentList();
-				log.info("fileList size : {}", fileList.size());
-				
-				AttachmentDTO tempFileInfo = new AttachmentDTO();
-				for(int i=0; i < fileList.size(); i++) {
-					tempFileInfo.setRefProdNo(currProdNo);
-					tempFileInfo.setOrigFileName(fileList.get(i).get("origFileName"));
-					tempFileInfo.setSaveFileName(fileList.get(i).get("saveFileName"));
-					tempFileInfo.setSavePath(fileList.get(i).get("savePath"));
-					tempFileInfo.setThumbnailPath(fileList.get(i).get("thumbnailPath"));
-					
-					if(i == 0) { //index 기준으로 첫번째 첨부 이미지는 메인썸네일, 그 다음은 서브썸네일에 해당
-						tempFileInfo.setFileType("THUMB_MAIN");
-					} else {
-						tempFileInfo.setFileType("THUMB_SUB");
-					}
-					
-					
-					list.add(tempFileInfo);
-				}
-				productService.attachProdThumbnail(tempFileInfo);
-			} catch (IOException e) { e.printStackTrace(); }
-		}
-		*/
+
 		if(editresult == 1) {
-			/* 수정 성공 메세지 띄기 */
+				/* 수정 성공 메세지 띄기 */
 		} else {
 			/* 수정 실패 메세지 띄기 */
 		}
-		
 		return mv;
+	
 	}
 	
 	
@@ -613,7 +577,7 @@ public class ProductController {
 		ProductDTO detail = productService.getProductDetails(prodNo);
 		
 		/* 상품별 리뷰 목록 조회 */
-//		List<ReviewDTO> reviewList = productService.getReviewListByProdNo(prodNo); //첨부파일 포함 리뷰 
+		//List<ReviewDTO> reviewList = productService.getReviewListByProdNo(prodNo); //첨부파일 포함 리뷰 
 		
 		AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
 		AttachmentDTO subThumb = productService.getSubThumbnailByProdNo(prodNo);
@@ -621,7 +585,7 @@ public class ProductController {
 		
 		
 		model.addAttribute("detail", detail);
-	//
+		model.addAttribute("reviewList", null);
 		model.addAttribute("mainThumb", mainThumb);
 		model.addAttribute("subThumb", subThumb);
 		

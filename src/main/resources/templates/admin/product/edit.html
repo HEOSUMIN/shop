@@ -97,6 +97,70 @@
 						<input type="text" id="prodColor" name="prodColor" th:value ="${detail.prodColor}">
 					</li>
 				</ul>
+				<hr>
+			 	<div class="optionBox">
+		          <div class="optionBox_Button">
+		          	<input type="button" value="행삭제" id="delRow">
+		         	<input type="button" value="행추가" id="addRow">
+		          </div>
+		          <div class="optionBox_Table">
+					 <table class="optionTable" id="optionTable">
+					    <thead>
+					      <tr>
+					      	<th>checkBox</th>
+					        <th>옵션명</th>
+					        <th>옵션값</th>
+					        <th>옵션추가금액</th>
+					        <th>재고</th>
+					      </tr>
+					    </thead>
+					    <tbody id="table_body" >
+					    <!-- 옵션이 없을 경우 -->
+					     <tr th:if="${optionCnt == 0}">
+					       <td>
+					          <input type="checkbox" name="chkbox"  class="form_control">
+					        </td>
+					        <td>
+					           <select id="optionCategoryNo" name="optionCategoryNo" class="form_control">
+					          		<option selected disabled hidden>선택</option>
+					          		<option th:each="optCategory : ${ optCategory }" th:value="${optCategory.optCategoryNo }" th:text="${ optCategory.optCategoryNm }"></option>
+					          </select>
+					        </td>
+					        <td>
+					          <input type="text" id="optionValue" name="optionValue">
+					        </td>
+					        <td>
+					          <input type="text" id="optionExtChrg" name="optionExtChrg" oninput="onlyNumberWithComma(this);">
+					        </td>
+					         <td>
+					          <input type="text" id="optionExtChrg" name="">
+					        </td>
+					     </tr>
+					     <!-- 옵션이 있을 경우 -->
+					     <tr th:if="${optionCnt > 0}" th:each="option : ${option}">
+					       <td>
+					          <input type="checkbox" name="chkbox"  class="form_control">
+					        </td>
+					        <td>
+					           <select id="optionCategoryNo" name="optionCategoryNo" class="form_control">
+					          		<option th:each="optCategory : ${ optCategory }" th:value="${optCategory.optCategoryNo }" th:text="${ optCategory.optCategoryNm }" th:selected="${optCategory.optCategoryNo}==${ option.optionCategoryNo }"></option>
+					          </select>
+					        </td>
+					        <td>
+					          <input type="text" id="optionValue" name="optionValue" th:value="${option.optionValue}">
+					        </td>
+					        <td>
+					          <input type="text" id="optionExtChrg" name="optionExtChrg" th:value="${option.optionExtChrg}" oninput="onlyNumberWithComma(this);">
+					        </td>
+					         <td>
+					          <input type="text" id="optionExtChrg" name="">
+					        </td>
+					     </tr>
+					    </tbody>
+					  </table>
+				  </div>
+				</div> 
+				<hr>
    				<div class="contentBox">
 	   				<ul>
 						<li class="th"><p>상세 내용</p></li>

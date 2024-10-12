@@ -8,6 +8,7 @@ public class OptionDTO {
 	private int refProdNo;
 	private int refStockNo;
 	private String optionCategoryNo;
+	private String optionCategoryNm;
 	private String optionValue;
 	private int optionExtChrg;
 	

@@ -142,15 +142,15 @@ function addABrand(){
 	}
 }
 
-
 /* 옵션 행 추가 */
 $('#addRow').on('click', function(){ //상품 등록
-	  let table_body = document.getElementById('table_body');
-	    let first_tr   = table_body.firstElementChild;
-	    let tr_clone   = first_tr.cloneNode(true);//*1)복제된 node 반환
-
-	    table_body.append(tr_clone);
-	    clean_first_tr(table_body.firstElementChild);
+		
+	let table_body = document.getElementById('table_body');
+    let first_tr   = table_body.firstElementChild;
+    let tr_clone   = first_tr.cloneNode(true);//*1)복제된 node 반환
+	
+    table_body.append(tr_clone);
+    clean_first_tr(table_body.firstElementChild);
 	
 });
 
@@ -169,45 +169,6 @@ $('#delRow').on('click', function(){ //상품 등록
 function onlyNumberWithComma(obj) {
   obj.value = Number(obj.value.replace(/[^0-9]/g,'')).toLocaleString();
 }
-
-/*  */
-
-$('#test').on('click', function(){ 
-
-
-	let optionCtgryNoArr = new Array();
-	let optionValueArr = new Array();
-	let optionExtChrgArr = new Array();
-	let optArr = new Array();
-		
-	for(var i=0; i< $('#table_body tr').length; i++){
-		
-		var tr =  $('#table_body tr').eq(i);
-		var td = tr.children();
-		
-		var optionCtgryNo = td.eq(1).find('select[name="optionCategoryNo"] option:selected').val(); //옵션명
-		var optionValue = td.eq(2).find('input[type="text"]').val();								//옵션값
-		var optionExtChrg = td.eq(3).find('input[type="text"]').val();								//옵션추가금액
-			
-		optionCtgryNoArr.push(optionCtgryNo);
-		optionValueArr.push(optionValue);
-		optionExtChrgArr.push(optionExtChrg);
-		
-		optArr.push({ optionCtgryNoArr : optionCtgryNo,
-			optionValueArr : optionValue,
-			optionExtChrgArr : optionExtChrg
-		});
-	}
-	
-	console.log(optionCtgryNoArr);
-	console.log(optArr);
-	
-	
-
-});
-
-
-
 
 /* 상품등록 폼 제출 */
 function submitProductForm(){
@@ -256,7 +217,7 @@ function submitProductForm(){
 		
 		var optionCtgryNo = td.eq(1).find('select[name="optionCategoryNo"] option:selected').val(); //옵션명
 		var optionValue = td.eq(2).find('input[type="text"]').val();								//옵션값
-		var optionExtChrg = td.eq(3).find('input[type="text"]').val();								//옵션추가금액
+		var optionExtChrg = td.eq(3).find('input[type="text"]').val().replace(",","");								//옵션추가금액
 		
 		alert(optionCtgryNo+"    "+optionValue+"     "+optionExtChrg);
 		optionCtgryNoArr.push(optionCtgryNo);
@@ -264,19 +225,13 @@ function submitProductForm(){
 		optionExtChrgArr.push(optionExtChrg);
 		
 		optArr.push({ optionCtgryNoArr : optionCtgryNo,
-			optionValueArr : optionValue,
-			optionExtChrgArr : optionExtChrg
+						optionValueArr : optionValue,
+						optionExtChrgArr : optionExtChrg
 		});
 	}
 
 	console.log(optionCtgryNoArr);
 	console.log(optArr);
-	
-	
-	
-	
-	
-	
 	
 	//상세내용
 	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
@@ -394,6 +349,35 @@ function submitEditProdForm(){
 	//색상 
 	let prodColor = document.getElementById('prodColor').value;
 	
+	//옵션
+		let optionCtgryNoArr = new Array();
+		let optionValueArr = new Array();
+		let optionExtChrgArr = new Array();
+		let optArr = new Array();
+			
+		for(var i=0; i< $('#table_body tr').length; i++){
+			
+			var tr =  $('#table_body tr').eq(i);
+			var td = tr.children();
+			
+			var optionCtgryNo = td.eq(1).find('select[name="optionCategoryNo"] option:selected').val(); //옵션명
+			var optionValue = td.eq(2).find('input[type="text"]').val();								//옵션값
+			var optionExtChrg = td.eq(3).find('input[type="text"]').val().replace(",","");								//옵션추가금액
+			
+			alert(optionCtgryNo+"    "+optionValue+"     "+optionExtChrg);
+			optionCtgryNoArr.push(optionCtgryNo);
+			optionValueArr.push(optionValue);
+			optionExtChrgArr.push(optionExtChrg);
+			
+			optArr.push({ optionCtgryNoArr : optionCtgryNo,
+							optionValueArr : optionValue,
+							optionExtChrgArr : optionExtChrg
+			});
+		}
+
+		console.log(optionCtgryNoArr);
+		console.log(optArr);
+	
 	//상세내용
 	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
 	console.log(prodDetailContent);
@@ -401,7 +385,7 @@ function submitEditProdForm(){
 	//FormData 객체 생성
 	let formData = new FormData();
 	
-	let attached = $('. v');
+	let attached = $('.files');
 	console.log(attached.length);
 	for(let i=0; i < attached.length; i++) {
 		if(attached[i].files.length > 0) {
@@ -421,6 +405,10 @@ function submitEditProdForm(){
 				 , prodSize : prodSize
 				 , prodColor : prodColor
 				 , prodDetailContent : prodDetailContent
+				 , optionCtgryNoArr : optionCtgryNoArr
+ 				 , optionValueArr : optionValueArr
+ 				 , optionExtChrgArr : optionExtChrgArr
+ 				 , optArrLength : optArr.length
 				 };
 	
 	formData.append("params", new Blob([JSON.stringify(params)], {type : 'application/json'}));

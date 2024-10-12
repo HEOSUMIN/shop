@@ -11,6 +11,7 @@ import com.pro.shop.product.model.dto.CategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.dto.RoomsDTO;
 import com.pro.shop.product.model.dto.OptionCategoryDTO;
+import com.pro.shop.product.model.dto.OptionDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 @Mapper
@@ -70,6 +71,12 @@ public interface ProductMapper {
 	int getTotalNumberByCriteria(ItemCriteria itemCriteria);
 	
 	List<CategoryDTO> getUpCategoryList(int categoryNo);
+	
+	List<OptionDTO> getOptionListByProdNo(int prodNo);
+
+	int deleteOption(int prodNo);
+	
+	int editProductOption(int refProdNo, String optionCtgryNo, String optionValue, int optionExtChrg);
 
 	
 }

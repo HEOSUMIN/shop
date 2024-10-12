@@ -13,6 +13,7 @@ import com.pro.shop.product.model.dto.CategoryDTO;
 import com.pro.shop.product.model.dto.ProductDTO;
 import com.pro.shop.product.model.dto.RoomsDTO;
 import com.pro.shop.product.model.dto.OptionCategoryDTO;
+import com.pro.shop.product.model.dto.OptionDTO;
 import com.pro.shop.upload.model.dto.AttachmentDTO;
 
 @Service("productService")
@@ -157,8 +158,23 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int addProductOption(String optionCtgryNo, String optionValue, int optionExtChrg) {
 		int result = productMapper.addProductOption(optionCtgryNo, optionValue, optionExtChrg);
-		
 		return result;
+	}
+
+	@Override
+	public List<OptionDTO> getOptionListByProdNo(int prodNo) {
+		return productMapper.getOptionListByProdNo(prodNo);
+	}
+
+	@Override
+	public int editProductOption(int refProdNo, String optionCtgryNo, String optionValue, int optionExtChrg) {
+		int result = productMapper.editProductOption(refProdNo, optionCtgryNo, optionValue, optionExtChrg);
+		return result;
+	}
+
+	@Override
+	public int deleteOption(int prodNo) {
+		return productMapper.deleteOption(prodNo);
 	}
 
 	

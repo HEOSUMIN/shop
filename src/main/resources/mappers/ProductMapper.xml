@@ -52,6 +52,19 @@
 		<id property="optCategoryNo" column="OPT_CATEGORY_NO"/>
 		<result property="optCategoryNm" column="OPT_CATEGORY_NM"/>
 	</resultMap>
+
+	<!-- 옵션 조회용 -->
+	<resultMap id="optionResultMap" type="com.pro.shop.product.model.dto.OptionDTO">
+		<id property="optionNo" column="OPTION_NO"/>
+		<result property="refProdNo" column="REF_PROD_NO"/>
+		<result property="refStockNo" column="REF_STOCK_NO"/>
+		<result property="optionCategoryNo" column="OPTION_CATEGORY_NO"/>
+		<result property="optionCategoryNm" column="OPT_CATEGORY_NM"/>
+		<result property="optionValue" column="OPTION_VALUE"/>
+		<result property="optionExtChrg" column="OPTION_EXTRA_CHARGE"/>
+	<!-- 	<association property="stock" resultMap="stockResultMap"/> 1:1
+		<association property="product" resultMap="productResultMap"/> 1:1 -->
+	</resultMap>
 	
 	<!-- 브랜드 조회용 -->
 	<resultMap id="brandResultMap" type="com.pro.shop.product.model.dto.BrandDTO">
@@ -491,5 +504,55 @@
 			WHERE ATTACHMENT_NO = #{ prodNo }
 			
 	</insert> -->
+	
+<!-- 상품별 옵션 조회 -->
+	<select id="getOptionListByProdNo" resultMap="optionResultMap">
+		SELECT A.OPTION_NO
+			 , A.REF_PROD_NO
+			 , A.OPTION_CATEGORY_NO
+			 , B.OPT_CATEGORY_NM
+			 , A.OPTION_VALUE
+			 , A.OPTION_EXTRA_CHARGE
+		FROM TBL_OPTION A
+		INNER JOIN TBL_OPTION_CAEGORY B ON A.OPTION_CATEGORY_NO = B.OPT_CATEGORY_NO
+		WHERE A.REF_PROD_NO = #{ prodNo }
+	</select>
+	
+<!-- 상품 목록에서 완전삭제 *잘못된 정보가 게재된 경우에 한함* -->
+	<delete id="deleteOption"> <!-- 1.옵션 삭제 -->
+		DELETE
+		  FROM TBL_OPTION A
+		 WHERE A.REF_PROD_NO = (SELECT
+		 							   B.PROD_NO
+		 						  FROM TBL_PRODUCT B
+		 						 WHERE A.REF_PROD_NO = B.PROD_NO
+		 						   AND B.PROD_NO = #{ prodNo })
+	</delete>
+	
+	
+<!-- 상품 옵션 등록 -->
+	<insert id="editProductOption">
+		INSERT
+		  INTO TBL_OPTION
+		(
+			OPTION_NO
+			,REF_PROD_NO
+			,REF_STOCK_NO
+			,OPTION_CATEGORY_NO
+			,OPTION_VALUE
+			,OPTION_EXTRA_CHARGE
+		)
+		VALUES
+		(
+		  SEQ_OPT_NO.NEXTVAL
+		, #{refProdNo}
+		, NULL
+		, #{ optionCtgryNo}
+	 	, #{ optionValue }	
+		, #{ optionExtChrg }
+		)
+	</insert>
+	
+
 	
 </mapper>
