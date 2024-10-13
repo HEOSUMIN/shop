@@ -460,3 +460,108 @@ function submitEditProdForm(){
 }
 
 
+/* ----------details ---------------*/
+
+/* 옵션 드롭다운 */
+$('.dropdown').on('click', function() {
+	
+	$('.dropdown').not($(this)).removeClass('open');
+	$(this).toggleClass('open');
+	if ($(this).hasClass('open')){
+		$(this).find('.option').attr('tabindex', 0);
+		$(this).find('.selected').focus();
+	} else {
+		$(this).find('.option').removeAttr('tabindex');
+		$(this).focus();
+	}
+	
+});
+
+
+/* 드롭다운 옵션 선택 시 */
+let selectedIdx = 0;
+$('.dropdown .option').on('click', function() {
+	
+	
+	$(this).closest('.list').find('.selected').removeClass('selected');
+	$(this).addClass('selected');
+	
+	alert($('.selected').text());
+	/*
+	$(this).closest('span').html('Hi, 반갑습니다.');
+	current*/
+	
+	$(this).$('.current').html('되라 ');
+/*
+	
+	var trs_one = $('#optionSelector'); 
+	var prodName = "";
+	   
+	trs_one.each(function() {
+		
+			
+		prodName += 
+	});
+	
+	
+
+	
+		
+	//이미 선택된 옵션인지 확인
+	if($('#selectedName').text() === $('.selected').text()) {
+		Swal.fire({
+			icon: 'warning',
+			title: '이미 선택된 옵션입니다',
+			confirmButtonColor: '#00008b',
+			confirmButtonText: '확인'
+		}).then((result) => {
+			if(result.isConfirmed) {
+				return;
+			}
+		})
+		return;
+	}
+	$('#selectedOption').append(
+		'<div class="selectedInfo">' +
+			'<div id="selectedName" class="selectedName selectedName' + selectedIdx + '"></div>' +
+			'<div class="countBox">' +
+				'<button type="button" class="button-down" disabled><i class="fa-solid fa-minus"></i></button>' +
+				'<input type="number" class="selectedAmount" name="selectedAmount" value="1">' +
+				'<button type="button" class="button-up"><i class="fa-solid fa-plus"></i></button>' +
+			'</div>' +
+			'<div class="selectedPrice"></div>' +
+			'<a href="#" class="button-delete" onclick="reset(); return false;"><i class="fa-solid fa-xmark"></i></a>' +
+		'</div>'
+	)
+	
+	var optionExtChrg = $(this).closest('.list').find('.selected').children('input').val();	//추가금액 
+	
+	
+	let prodName = $('.selected').text(); //상품명
+	$('.selectedName' + selectedIdx).text(prodName);
+	
+	
+	var hiddenPriceText =  optionExtChrg.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
+	
+	
+	var hiddenPriceValue = parseInt($('.getHiddenPrice').attr('value')); //판매가 value
+	var hiddenPriceText = $('.getHiddenPrice').text(); //판매가 text
+		
+	$('.selectedPrice').text(hiddenPriceText);
+	$('.selectedPrice').attr('value', hiddenPriceValue);
+		
+
+	
+	
+	
+	//let text = $(this).data('display-text') || $(this).html();
+	//$(this).closest('.dropdown').find('.current').html(text); //선택값 반영
+	//$(this).closest('.dropdown').prev('select').val($(this).data('value')).trigger('change');
+	selectedIdx++;
+	
+	sumTotalPrice();
+	
+*/
+});
+
+

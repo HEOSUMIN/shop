@@ -65,6 +65,5 @@ public class MypageController {
 		model.addAttribute("deliveredOrderCount","");
 	}
 	
-	
 
 }

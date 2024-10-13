@@ -1,5 +1,6 @@
 package com.pro.shop.product.controller;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -578,6 +579,19 @@ public class ProductController {
 		
 		/* 상품별 리뷰 목록 조회 */
 		//List<ReviewDTO> reviewList = productService.getReviewListByProdNo(prodNo); //첨부파일 포함 리뷰 
+
+		/* 상품별 옵션 목록 호출 */
+		List<OptionDTO> option = productService.getOptionListByProdNo(prodNo);
+		List<String> optionCategory = new ArrayList<>();
+
+		for(OptionDTO o : option) {
+			if (!optionCategory.contains(o.getOptionCategoryNm())) {
+				optionCategory.add(o.getOptionCategoryNm());
+		    }
+		}
+		
+		log.info("optionCategory: {}",optionCategory);
+		log.info("option: {}",option);
 		
 		AttachmentDTO mainThumb = productService.getMainThumbnailByProdNo(prodNo);
 		AttachmentDTO subThumb = productService.getSubThumbnailByProdNo(prodNo);
@@ -585,6 +599,8 @@ public class ProductController {
 		
 		
 		model.addAttribute("detail", detail);
+		model.addAttribute("option", option);
+		model.addAttribute("optionCategory", optionCategory);
 		model.addAttribute("reviewList", null);
 		model.addAttribute("mainThumb", mainThumb);
 		model.addAttribute("subThumb", subThumb);
