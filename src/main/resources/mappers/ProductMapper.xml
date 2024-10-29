@@ -60,7 +60,7 @@
 		<result property="refStockNo" column="REF_STOCK_NO"/>
 		<result property="optionCategoryNo" column="OPTION_CATEGORY_NO"/>
 		<result property="optionCategoryNm" column="OPT_CATEGORY_NM"/>
-		<result property="optionValue" column="OPTION_VALUE"/>
+		<result property="optionNm" column="OPTION_NAME"/>
 		<result property="optionExtChrg" column="OPTION_EXTRA_CHARGE"/>
 	<!-- 	<association property="stock" resultMap="stockResultMap"/> 1:1
 		<association property="product" resultMap="productResultMap"/> 1:1 -->
@@ -424,7 +424,7 @@
 			,REF_PROD_NO
 			,REF_STOCK_NO
 			,OPTION_CATEGORY_NO
-			,OPTION_VALUE
+			,OPTION_NAME
 			,OPTION_EXTRA_CHARGE
 		)
 		VALUES
@@ -433,7 +433,7 @@
 		, SEQ_PROD_NO.CURRVAL
 		, NULL
 		, #{ optionCtgryNo}
-	 	, #{ optionValue }	
+	 	, #{ optionNm }	
 		, #{ optionExtChrg }
 		)
 	</insert>
@@ -511,7 +511,7 @@
 			 , A.REF_PROD_NO
 			 , A.OPTION_CATEGORY_NO
 			 , B.OPT_CATEGORY_NM
-			 , A.OPTION_VALUE
+			 , A.OPTION_NAME
 			 , A.OPTION_EXTRA_CHARGE
 		FROM TBL_OPTION A
 		LEFT JOIN TBL_OPTION_CAEGORY B ON A.OPTION_CATEGORY_NO = B.OPT_CATEGORY_NO
@@ -539,7 +539,7 @@
 			,REF_PROD_NO
 			,REF_STOCK_NO
 			,OPTION_CATEGORY_NO
-			,OPTION_VALUE
+			,OPTION_NAME
 			,OPTION_EXTRA_CHARGE
 		)
 		VALUES
@@ -548,7 +548,7 @@
 		, #{refProdNo}
 		, NULL
 		, #{ optionCtgryNo}
-	 	, #{ optionValue }	
+	 	, #{ optionNm }	
 		, #{ optionExtChrg }
 		)
 	</insert>

@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <title>관리자페이지|shop</title>
 	<th:block layout:fragment="css">
-		<link th:href="@{/css/customtable.css}" rel="stylesheet">
+		<link th:href="@{/css/customtable.css?after}" rel="stylesheet">
 		 <link th:href="@{/css/thumbnail.css}" rel="stylesheet">
 	</th:block>
 </head>
 <body layout:fragment="content">
-<div class="container content-wrapper">
-	<h1>상품 등록</h1>
-		<div class="addBox">
-			<form id="addForm" name="addForm" class="add-form" th:action="@{/admin/product/add}" method="post" enctype="multipart/form-data">
+	<div class="container content-wrapper">
+		<h1>상품 등록</h1>
+			<div class="addBox">
+				<form id="addForm" name="addForm" class="add-form" th:action="@{/admin/product/add}" method="post" enctype="multipart/form-data">
 				<hr>
 				<ul>
 					<li class="th"><p>제품번호</p></li>
@@ -86,12 +86,29 @@
 						<input type="number" id="amount" name="amount" min="1">
 					</li>
 				</ul>
-				<hr>
-			 	<div class="optionBox">
-		          <div class="optionBox_Button">
-		          	<input type="button" value="행삭제" id="delRow">
-		         	<input type="button" value="행추가" id="addRow">
-		          </div>
+				<ul>
+					<li class="option_li">
+						<span>이 상품에 다양한 크기, 색상과 같은 옵션이 있나요?&nbsp;&nbsp;</span>
+						<a style="color:#2f89d8;" onclick="optionOpen()">옵션 열기</a>
+					</li>
+				</ul>
+				<div class="optionAdd" style="display:none" >
+					<span id="optionAddBtn" onclick="optionAdd()">+옵션추가</span>
+				</div>
+				<div class="optionDetailBtn" style="display:none">
+					<input type="button" value="세부사항 입력하기" onclick="optionDetailBtn()">
+					<div class="optionDetailChk"><input type="checkbox" id="combineYn">&nbsp;조합형옵션</div>
+				</div>
+				<div class="optionDetailDiv" style="display:none" >
+				</div>
+			 	<!-- <div class="optionBox">
+       			  <ul>
+					<li class="th" style="width:500px;"><p>옵션추가 (*색상, 사이즈 등 옵션이 여러개인 경우 추가 등록 해주세요.)</p></li>
+					<li>
+						<input type="button" value="행삭제" id="delRow">
+		         		<input type="button" value="행추가" id="addRow">
+					</li>
+				  </ul>
 		          <div class="optionBox_Table">
 					 <table class="optionTable" id="optionTable">
 					    <thead>
@@ -109,9 +126,11 @@
 					          <input type="checkbox" name="chkbox"  class="form_control">
 					        </td>
 					        <td>
-					           <select id="optionCategoryNo" name="optionCategoryNo" class="form_control">
+				               <input type="text" id="optionCategoryNo" name="optionCategoryNo" class="form_control">
+					           <select id="optionCategoryNo" name="optionCategoryNo" class="form_control" onchange="addOptionCategry();">
 					          		<option selected disabled hidden>선택</option>
 					          		<option th:each="optCategory : ${ optCategory }" th:value="${optCategory.optCategoryNo }" th:text="${ optCategory.optCategoryNm }"></option>
+					          		<option value="etc">옵션 추가</option>
 					          </select>
 					        </td>
 					        <td>
@@ -127,7 +146,7 @@
 					    </tbody>
 					  </table>
 				  </div>
-				</div> 
+				</div>  -->
 				<hr>
 			  	<div class="contentBox">
 	   				<ul>

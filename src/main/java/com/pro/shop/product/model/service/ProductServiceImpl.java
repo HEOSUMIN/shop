@@ -156,8 +156,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public int addProductOption(String optionCtgryNo, String optionValue, int optionExtChrg) {
-		int result = productMapper.addProductOption(optionCtgryNo, optionValue, optionExtChrg);
+	public int addProductOption(String optionCtgryNo, String optionNm, int optionExtChrg) {
+		int result = productMapper.addProductOption(optionCtgryNo, optionNm, optionExtChrg);
 		return result;
 	}
 
@@ -167,8 +167,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public int editProductOption(int refProdNo, String optionCtgryNo, String optionValue, int optionExtChrg) {
-		int result = productMapper.editProductOption(refProdNo, optionCtgryNo, optionValue, optionExtChrg);
+	public int editProductOption(int refProdNo, String optionCtgryNo, String optionNm, int optionExtChrg) {
+		int result = productMapper.editProductOption(refProdNo, optionCtgryNo, optionNm, optionExtChrg);
 		return result;
 	}
 

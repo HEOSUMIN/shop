@@ -21,9 +21,15 @@ ul{
 }
 
 
-.selector-wrapper .td {
+.option-wrapper .td {
 	flex-direction: column;
 }
+
+
+.option-wrapper {
+	height: 230px;
+}
+
 
 
 
@@ -58,6 +64,12 @@ ul{
 	float: right;
 	width: 50%;
 	font-size: 14px;
+}
+
+.infoBox li{
+    width: 100%;
+    height: 44px;
+    align-items: center;
 }
 
 .infoBox li{

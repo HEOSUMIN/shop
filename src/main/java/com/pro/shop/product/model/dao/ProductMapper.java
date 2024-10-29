@@ -39,7 +39,7 @@ public interface ProductMapper {
 	int addProduct(	int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
 	
-	int addProductOption(String optionCtgryNo, String optionValue, int optionExtChrg);
+	int addProductOption(String optionCtgryNo, String optionNm, int optionExtChrg);
 	
 	int editProduct(int prodNo, int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
@@ -76,7 +76,7 @@ public interface ProductMapper {
 
 	int deleteOption(int prodNo);
 	
-	int editProductOption(int refProdNo, String optionCtgryNo, String optionValue, int optionExtChrg);
+	int editProductOption(int refProdNo, String optionCtgryNo, String optionNm, int optionExtChrg);
 
 	
 }

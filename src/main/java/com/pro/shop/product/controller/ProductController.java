@@ -194,14 +194,14 @@ public class ProductController {
 		for(int i=0; i<totalOptionNumber; i++) {
 			
 			String optionCtgryNo = optionCtgryNoArr[i].toString();
-			String optionValue = optionValueArr[i].toString();
+			String optionNm = optionValueArr[i].toString();
 			int optionExtChrg = Integer.parseInt(optionExtChrgArr[i]); 
 			
 			option.setOptionCategoryNo(optionCtgryNo);
-			option.setOptionValue(optionValue);
+			option.setOptionNm(optionNm);
 			option.setOptionExtChrg(optionExtChrg);
 			
-			productService.addProductOption(option.getOptionCategoryNo(), option.getOptionValue(), option.getOptionExtChrg());
+			productService.addProductOption(option.getOptionCategoryNo(), option.getOptionNm(), option.getOptionExtChrg());
 		}
 	
 		log.info("상품 옵션 insert end");
@@ -464,16 +464,16 @@ public class ProductController {
 		for(int i=0; i<totalOptionNumber; i++) {
 			
 			String optionCtgryNo = optionCtgryNoArr[i].toString();
-			String optionValue = optionValueArr[i].toString();
+			String optionNm = optionValueArr[i].toString();
 			int optionExtChrg = Integer.parseInt(optionExtChrgArr[i]); 
 	
 			log.info("prodNo : {}", prodNo);
 			option.setRefProdNo(prodNo);
 			option.setOptionCategoryNo(optionCtgryNo);
-			option.setOptionValue(optionValue);
+			option.setOptionNm(optionNm);
 			option.setOptionExtChrg(optionExtChrg);
 			
-			productService.editProductOption(option.getRefProdNo(), option.getOptionCategoryNo(), option.getOptionValue(), option.getOptionExtChrg());
+			productService.editProductOption(option.getRefProdNo(), option.getOptionCategoryNo(), option.getOptionNm(), option.getOptionExtChrg());
 		}
 	
 		log.info("상품 옵션 insert end");

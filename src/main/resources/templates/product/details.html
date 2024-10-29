@@ -64,17 +64,15 @@
 						</li>
 					</ul>
 				</div>
-				<div class="selector-wrapper" >
+				<div class="option-wrapper" >
 					<ul th:if="${#lists.size(optionCategory) > 0}">
 						<li class="th"><p>옵션 선택</p></li>
 						<li class="td">
-							<div id="optionSelector$" class="dropdown" tabindex="0" th:each="optionCategory : ${optionCategory}" >
-								<span class="current" style="line-height: 40px;">[[${ optionCategory}]]을 선택하세요</span>
+							<div id="optionSelector" class="dropdown" tabindex="0" th:each="optionCategory, optionCategoryState: ${optionCategory}" >
+								<span class="current" th:value="|current${optionCategoryState.index}|" style="line-height: 40px;">[[${ optionCategory}]]을 선택하세요</span>
 								<div class="list">
 									<ul>
-										<li class="option" th:each="option : ${ option }" th:value="${ option.optionNo }" th:if="${option.optionCategoryNm == optionCategory}" >[[${ option.optionValue}]] / +[[${ option.optionExtChrg}]]원 (재고: 개)
-											<input type="hidden" id="optionExtChrg" th:value="${ option.optionExtChrg }" >
-										</li>
+										<li th:class="option" th:each="option : ${ option }" th:value="${ option.optionValue }" th:if="${option.optionCategoryNm == optionCategory}" >[[${ option.optionValue}]] (+[[${ option.optionExtChrg}]]원)</li>
 									</ul>
 								</div>
 								<i class="fa-solid fa-chevron-down"></i>
