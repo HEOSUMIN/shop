@@ -184,24 +184,26 @@ public class ProductController {
 		log.info("상품 insert end");
 		
 		/* 상품 옵션 추가 */
-		String[] optionCtgryNoArr = params.get("optionCtgryNoArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");	//옵션명
+		String[] optionNameArr = params.get("optionNameArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");		//옵션명
 		String[] optionValueArr = params.get("optionValueArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");		//옵션값
 		String[] optionExtChrgArr = params.get("optionExtChrgArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");	//옵션추가금액
+		String[] optionStockArr = params.get("optionStockArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");		//재고 
 		
 		int totalOptionNumber = Integer.parseInt(params.get("optArrLength").toString());
 		
 		OptionDTO option = new OptionDTO();
 		for(int i=0; i<totalOptionNumber; i++) {
 			
-			String optionCtgryNo = optionCtgryNoArr[i].toString();
-			String optionNm = optionValueArr[i].toString();
-			int optionExtChrg = Integer.parseInt(optionExtChrgArr[i]); 
+			String optionName = optionNameArr[i].toString();
+			String optionValue = optionValueArr[i].toString();
+			int optionExtChrg = Integer.parseInt(optionExtChrgArr[i]);
+			int optionStock = Integer.parseInt(optionStockArr[i]);
 			
-			option.setOptionCategoryNo(optionCtgryNo);
-			option.setOptionNm(optionNm);
+			option.setOptionName(optionName);
+			option.setOptionValue(optionValue);
 			option.setOptionExtChrg(optionExtChrg);
 			
-			productService.addProductOption(option.getOptionCategoryNo(), option.getOptionNm(), option.getOptionExtChrg());
+			productService.addProductOption(option.getOptionName(), option.getOptionValue(), option.getOptionExtChrg());
 		}
 	
 		log.info("상품 옵션 insert end");
@@ -456,24 +458,24 @@ public class ProductController {
 		log.info("상품 delete end");
 		
 		/* 상품 옵션 재추가 */
-		String[] optionCtgryNoArr = params.get("optionCtgryNoArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");	//옵션명
+		String[] optionNameArr = params.get("optionNameArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");		//옵션명
 		String[] optionValueArr = params.get("optionValueArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");		//옵션값
 		String[] optionExtChrgArr = params.get("optionExtChrgArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");	//옵션추가금액
+		String[] optionStockArr = params.get("optionStockArr").toString().replace("[", "").replace("]", "").replaceAll("[\\t\\s]","").split(",");		//재고 
 		
 		OptionDTO option = new OptionDTO();
 		for(int i=0; i<totalOptionNumber; i++) {
 			
-			String optionCtgryNo = optionCtgryNoArr[i].toString();
-			String optionNm = optionValueArr[i].toString();
-			int optionExtChrg = Integer.parseInt(optionExtChrgArr[i]); 
-	
-			log.info("prodNo : {}", prodNo);
-			option.setRefProdNo(prodNo);
-			option.setOptionCategoryNo(optionCtgryNo);
-			option.setOptionNm(optionNm);
+			String optionName = optionNameArr[i].toString();
+			String optionValue = optionValueArr[i].toString();
+			int optionExtChrg = Integer.parseInt(optionExtChrgArr[i]);
+			int optionStock = Integer.parseInt(optionStockArr[i]);
+			
+			option.setOptionName(optionName);
+			option.setOptionValue(optionValue);
 			option.setOptionExtChrg(optionExtChrg);
 			
-			productService.editProductOption(option.getRefProdNo(), option.getOptionCategoryNo(), option.getOptionNm(), option.getOptionExtChrg());
+			productService.editProductOption(option.getRefProdNo(), option.getOptionName(), option.getOptionValue(), option.getOptionExtChrg());
 		}
 	
 		log.info("상품 옵션 insert end");
@@ -585,8 +587,8 @@ public class ProductController {
 		List<String> optionCategory = new ArrayList<>();
 
 		for(OptionDTO o : option) {
-			if (!optionCategory.contains(o.getOptionCategoryNm())) {
-				optionCategory.add(o.getOptionCategoryNm());
+			if (!optionCategory.contains(o.getOptionName())) {
+				optionCategory.add(o.getOptionName());
 		    }
 		}
 		

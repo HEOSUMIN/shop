@@ -156,8 +156,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public int addProductOption(String optionCtgryNo, String optionNm, int optionExtChrg) {
-		int result = productMapper.addProductOption(optionCtgryNo, optionNm, optionExtChrg);
+	public int addProductOption(String optionName, String optionValue, int optionExtChrg) {
+		int result = productMapper.addProductOption(optionName, optionValue, optionExtChrg);
 		return result;
 	}
 

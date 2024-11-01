@@ -32,7 +32,7 @@ public interface ProductService {
 	int addProduct(int categoryNo,int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);
 	
-	int addProductOption(String optionCtgryNo, String optionNm, int optionExtChrg);
+	int addProductOption(String optionName, String optionValue, int optionExtChrg);
 	
 	int editProduct(int prodNo, int categoryNo, int brandNo,String prodName,String prodDesc,int prodPrice,int discountRate,
 			String prodDetailContent,String prodSize ,String prodColor);

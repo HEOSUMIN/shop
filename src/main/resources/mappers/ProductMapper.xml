@@ -58,9 +58,8 @@
 		<id property="optionNo" column="OPTION_NO"/>
 		<result property="refProdNo" column="REF_PROD_NO"/>
 		<result property="refStockNo" column="REF_STOCK_NO"/>
-		<result property="optionCategoryNo" column="OPTION_CATEGORY_NO"/>
-		<result property="optionCategoryNm" column="OPT_CATEGORY_NM"/>
-		<result property="optionNm" column="OPTION_NAME"/>
+		<result property="optionName" column="OPTION_NAME"/>
+		<result property="optionValue" column="OPTION_VALUE"/>
 		<result property="optionExtChrg" column="OPTION_EXTRA_CHARGE"/>
 	<!-- 	<association property="stock" resultMap="stockResultMap"/> 1:1
 		<association property="product" resultMap="productResultMap"/> 1:1 -->
@@ -418,13 +417,13 @@
 	<!-- 상품 옵션 등록 -->
 	<insert id="addProductOption">
 		INSERT
-		  INTo TBL_OPTION
+		  INTO TBL_OPTION
 		(
 			OPTION_NO
 			,REF_PROD_NO
 			,REF_STOCK_NO
-			,OPTION_CATEGORY_NO
 			,OPTION_NAME
+			,OPTION_VALUE
 			,OPTION_EXTRA_CHARGE
 		)
 		VALUES
@@ -432,8 +431,8 @@
 		  SEQ_OPT_NO.NEXTVAL
 		, SEQ_PROD_NO.CURRVAL
 		, NULL
-		, #{ optionCtgryNo}
-	 	, #{ optionNm }	
+		, #{ optionName}
+	 	, #{ optionValue }	
 		, #{ optionExtChrg }
 		)
 	</insert>
@@ -509,12 +508,10 @@
 	<select id="getOptionListByProdNo" resultMap="optionResultMap">
 		SELECT A.OPTION_NO
 			 , A.REF_PROD_NO
-			 , A.OPTION_CATEGORY_NO
-			 , B.OPT_CATEGORY_NM
 			 , A.OPTION_NAME
+			 , A.OPTION_VALUE
 			 , A.OPTION_EXTRA_CHARGE
 		FROM TBL_OPTION A
-		LEFT JOIN TBL_OPTION_CAEGORY B ON A.OPTION_CATEGORY_NO = B.OPT_CATEGORY_NO
 		WHERE A.REF_PROD_NO = #{ prodNo }
 	</select>
 	
@@ -538,8 +535,8 @@
 			OPTION_NO
 			,REF_PROD_NO
 			,REF_STOCK_NO
-			,OPTION_CATEGORY_NO
 			,OPTION_NAME
+			,OPTION_VALUE
 			,OPTION_EXTRA_CHARGE
 		)
 		VALUES
@@ -547,8 +544,8 @@
 		  SEQ_OPT_NO.NEXTVAL
 		, #{refProdNo}
 		, NULL
-		, #{ optionCtgryNo}
-	 	, #{ optionNm }	
+		, #{ optionName}
+	 	, #{ optionValue }	
 		, #{ optionExtChrg }
 		)
 	</insert>

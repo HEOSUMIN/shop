@@ -240,8 +240,13 @@ $('#delRow').on('click', function(){ //상품 등록
 function optionOpen(){
 	if ($('.optionAdd').css('display') == 'none') {
 		$('.optionAdd').show();  
+		$('.optionDetailBtn').show();  
+		$('.optionDetailDiv').show(); 
+		
 	} else {
 		$('.optionAdd').hide();
+		$('.optionDetailBtn').hide();  
+		$('.optionDetailDiv').hide(); 
 	}
 }
 
@@ -283,22 +288,12 @@ function optionDetailBtn(){
 	
 	$('.optionTable').remove();
 	
-	let optCategory = new Array();
-	let optValue = new Array();
 	var combineYn = document.getElementById('combineYn').value;
-	
 	console.log("combineYn::"+combineYn);
 	
-	for(var i=0; i< $('.option111').length ; i++){
-		var optCategoryNm = $('.option111:eq('+i+') > li:eq(0)').children('#optCategoryNm').val();	//옵션명
-		var optNm = $('.option111:eq('+i+') > li:eq(1)').children('#optNm').val()			//옵션값
-		optCategory.push(optCategoryNm);
-		optValue.push(optNm);
-	}
+	/* 조합형 */  
+	if(combineYn == "Y"){		//수정
 	
-	
-	if(combineYn == "Y"){
-	/* 조합형 */
 		/* thead 구성 */
 		var textThead="";
 		for(var i=0; i< optCategory.length; i++){
@@ -322,28 +317,18 @@ function optionDetailBtn(){
 			'</table>'	
 		)
 		
-		/* tbody 구성 */
-		$('#table_body').append(
-			
-		)
-					
-	}else{
-	/* 비조합형 */
-			let optNmArry = new Array();
-			var text="";
-			for(var i=0; i< optCategory.length; i++){
-				optNmArry = optValue[i].split(",");	// optValue배열에 담긴값 텍스트로 저장 
-			
-				for(var j=0; j<optNmArry.length; j++){
-					text += '<tr>'+
+		var textTbody="";
+		for(let i=0; i< optValue.length; i++){	//우선 옵션 2개까지만 가능하도록. 후에 수정 
+			for(let j=0; j< optValue[i].length; j++){
+				textTbody += '<tr>'+
 								'<td>'+
 									'<input type="checkbox" name="chkbox"  class="form_control">'+
 								'</td>'+
 								'<td>'+
-									'<p>'+optCategory[i]+'</p>'+
+									'<p>'+optValue[i][j]+'</p>'+
 								'</td>'+
 								'<td>'+
-									'<p>'+optNmArry[j]+'</p>'+
+									'<p>'+optValue[i+1][j]+'</p>'+
 								'</td>'+
 								'<td>'+
 									'<input type="text"  class="form_control">'+
@@ -358,32 +343,85 @@ function optionDetailBtn(){
 									'<input type="text"   class="form_control">'+
 								'</td>'+					
 							'</tr>'
-				}
 			}
-			
-			$('.optionDetailDiv').show();  
-			
-			$('.optionDetailDiv').append(
-				'<table class="optionTable" id="optionTable">'+
-					'<thead>'+
-				    	'<tr>'+
-					      	'<th>checkBox</th>'+
-							'<th>옵션명</th>'+
-							'<th>옵션값</th>'+
-							'<th>옵션추가금액</th>'+
-					       	'<th>재고</th>'+
-					        '<th>재고추가</th>'+
-					        '<th>상태</th>'+
-						'</tr>'+
-					'</thead>'+
-					'<tbody id="table_body">'+
-					text+
-					'</tbody>'+
-				'</table>'
-			)
-	}
+		}
+		/* tbody 구성 */
+		$('#table_body').append(
+			textTbody
+		)
+					
+	}else{
+	/* 비조합형 */
+		let optCategory = new Array(); //옵션명 담을 배열 
+		let optValue = new Array();		//옵션값 담을 배열
 	
+		for(var i=0; i< $('.option111').length ; i++){
+			var optCategoryNm = $('.option111:eq('+i+') > li:eq(0)').children('#optCategoryNm').val();	//옵션명
+			var optNm = $('.option111:eq('+i+') > li:eq(1)').children('#optNm').val()					//옵션값
+			optCategory.push(optCategoryNm);
+			optValue.push(optNm);
+		}
+	
+	
+		let optNmArry = new Array();
+		var text="";
+		for(var i=0; i< optCategory.length; i++){
+			optNmArry = optValue[i].split(",");	// optValue배열에 담긴값 텍스트로 저장 
+		
+			for(var j=0; j<optNmArry.length; j++){
+				text += '<tr>'+
+							'<td>'+
+								'<input type="checkbox" name="chkbox"  class="form_control">'+
+							'</td>'+
+							'<td>'+
+								'<p>'+optCategory[i]+'</p>'+
+							'</td>'+
+							'<td>'+
+								'<p>'+optNmArry[j]+'</p>'+
+							'</td>'+
+							'<td>'+
+								'<input type="text" id="optionExtChrg"  class="form_control">'+
+							'</td>'+
+							'<td>'+
+								'<input type="text" id="optionStock"  class="form_control">'+
+							'</td>'+
+							'<td>'+
+								'<input type="text"   class="form_control">'+
+							'</td>'+
+							'<td>'+
+								'<input type="text"   class="form_control">'+
+							'</td>'+					
+						'</tr>'
+			}
+		}
+		
+		$('.optionDetailDiv').show();  
+		
+		$('.optionDetailDiv').append(
+			'<table class="optionTable" id="optionTable">'+
+				'<thead>'+
+			    	'<tr>'+
+				      	'<th>checkBox</th>'+
+						'<th>옵션명</th>'+
+						'<th>옵션값</th>'+
+						'<th>옵션추가금액</th>'+
+				       	'<th>재고</th>'+
+				        '<th>재고추가</th>'+
+				        '<th>상태</th>'+
+					'</tr>'+
+				'</thead>'+
+				'<tbody id="table_body">'+
+				text+
+				'</tbody>'+
+			'</table>'
+		)
+	}
 }
+
+function test(){
+
+}
+
 
 $("#combineYn").change(function(){
 	
@@ -441,33 +479,41 @@ function submitProductForm(){
 	let prodColor = document.getElementById('prodColor').value;
 	
 	//옵션
-	let optionCtgryNoArr = new Array();
+	let optionNameArr = new Array();	
 	let optionValueArr = new Array();
 	let optionExtChrgArr = new Array();
+	let optionStockArr = new Array();
 	let optArr = new Array();
 		
 	for(var i=0; i< $('#table_body tr').length; i++){
 		
 		var tr =  $('#table_body tr').eq(i);
 		var td = tr.children();
+
+		var optionName = td.eq(1).find('p').text(); 					//옵션명 										
+		var optionValue = td.eq(2).find('p').text();					//옵션값
+		var optionExtChrg = td.eq(3).find('input[type="text"]').val();	//옵션추가금액 			
+		var optionStock = td.eq(4).find('input[type="text"]').val();	//재고 
 		
-		var optionCtgryNo = td.eq(1).find('select[name="optionCategoryNo"] option:selected').val(); //옵션명
-		var optionValue = td.eq(2).find('input[type="text"]').val();								//옵션값
-		var optionExtChrg = td.eq(3).find('input[type="text"]').val().replace(",","");								//옵션추가금액
+		alert(optionName+"    "+optionValue+"     "+optionExtChrg+"      "+optionStock);
 		
-		alert(optionCtgryNo+"    "+optionValue+"     "+optionExtChrg);
-		optionCtgryNoArr.push(optionCtgryNo);
+		optionNameArr.push(optionName);
 		optionValueArr.push(optionValue);
 		optionExtChrgArr.push(optionExtChrg);
+		optionStockArr.push(optionStock);
 		
-		optArr.push({ optionCtgryNoArr : optionCtgryNo,
+		optArr.push({ optionNameArr : optionName,
 						optionValueArr : optionValue,
-						optionExtChrgArr : optionExtChrg
+						optionExtChrgArr : optionExtChrg,
+						optionStockArr : optionStock
 		});
 	}
 
-	console.log(optionCtgryNoArr);
+	console.log(optionNameArr);
+	console.log(optionValueArr);
+	console.log(optionExtChrgArr);
 	console.log(optArr);
+
 	
 	//상세내용
 	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
@@ -497,9 +543,10 @@ function submitProductForm(){
 				 , prodSize : prodSize
 				 , prodColor : prodColor
 				 , prodDetailContent : prodDetailContent
-				 , optionCtgryNoArr : optionCtgryNoArr
+				 , optionNameArr : optionNameArr
 				 , optionValueArr : optionValueArr
 				 , optionExtChrgArr : optionExtChrgArr
+				 , optionStockArr : optionStockArr
 				 , optArrLength : optArr.length
 				 };
 	
@@ -586,33 +633,40 @@ function submitEditProdForm(){
 	let prodColor = document.getElementById('prodColor').value;
 	
 	//옵션
-		let optionCtgryNoArr = new Array();
-		let optionValueArr = new Array();
-		let optionExtChrgArr = new Array();
-		let optArr = new Array();
-			
-		for(var i=0; i< $('#table_body tr').length; i++){
-			
-			var tr =  $('#table_body tr').eq(i);
-			var td = tr.children();
-			
-			var optionCtgryNo = td.eq(1).find('select[name="optionCategoryNo"] option:selected').val(); //옵션명
-			var optionValue = td.eq(2).find('input[type="text"]').val();								//옵션값
-			var optionExtChrg = td.eq(3).find('input[type="text"]').val().replace(",","");								//옵션추가금액
-			
-			alert(optionCtgryNo+"    "+optionValue+"     "+optionExtChrg);
-			optionCtgryNoArr.push(optionCtgryNo);
-			optionValueArr.push(optionValue);
-			optionExtChrgArr.push(optionExtChrg);
-			
-			optArr.push({ optionCtgryNoArr : optionCtgryNo,
-							optionValueArr : optionValue,
-							optionExtChrgArr : optionExtChrg
-			});
-		}
+	let optionNameArr = new Array();	
+	let optionValueArr = new Array();
+	let optionExtChrgArr = new Array();
+	let optionStockArr = new Array();
+	let optArr = new Array();
+		
+	for(var i=0; i< $('#table_body tr').length; i++){
+		
+		var tr =  $('#table_body tr').eq(i);
+		var td = tr.children();
 
-		console.log(optionCtgryNoArr);
-		console.log(optArr);
+		var optionName = td.eq(1).find('p').text(); 					//옵션명 										
+		var optionValue = td.eq(2).find('p').text();					//옵션값
+		var optionExtChrg = td.eq(3).find('input[type="text"]').val();	//옵션추가금액 			
+		var optionStock = td.eq(4).find('input[type="text"]').val();	//재고 
+		
+		alert(optionName+"    "+optionValue+"     "+optionExtChrg+"      "+optionStock);
+		
+		optionNameArr.push(optionName);
+		optionValueArr.push(optionValue);
+		optionExtChrgArr.push(optionExtChrg);
+		optionStockArr.push(optionStock);
+		
+		optArr.push({ optionNameArr : optionName,
+						optionValueArr : optionValue,
+						optionExtChrgArr : optionExtChrg,
+						optionStockArr : optionStock
+		});
+	}
+
+	console.log(optionNameArr);
+	console.log(optionValueArr);
+	console.log(optionExtChrgArr);
+	console.log(optArr);
 	
 	//상세내용
 	let prodDetailContent = CKEDITOR.instances['prodDetailContent'].getData();
@@ -641,9 +695,10 @@ function submitEditProdForm(){
 				 , prodSize : prodSize
 				 , prodColor : prodColor
 				 , prodDetailContent : prodDetailContent
-				 , optionCtgryNoArr : optionCtgryNoArr
+				 , optionNameArr : optionNameArr
  				 , optionValueArr : optionValueArr
  				 , optionExtChrgArr : optionExtChrgArr
+ 				 , optionStockArr : optionStockArr
  				 , optArrLength : optArr.length
 				 };
 	
@@ -696,11 +751,10 @@ function submitEditProdForm(){
 }
 
 
-/* ----------details ---------------*/
+/* ---------- details ---------------*/
 
 /* 옵션 드롭다운 */
 $('.dropdown').on('click', function() {
-	
 	$('.dropdown').not($(this)).removeClass('open');
 	$(this).toggleClass('open');
 	if ($(this).hasClass('open')){
@@ -715,89 +769,114 @@ $('.dropdown').on('click', function() {
 
 /* 드롭다운 옵션 선택 시 */
 let selectedIdx = 0;
+let prev_optionNameArry = new Array();
+let selectedText = "";
+let optionExtChrg = 0;
 $('.dropdown .option').on('click', function() {
-
+	
+	/* 옵션 seletbox 선택전 초기값 저장 */
+	let optionName = $(this).closest('.dropdown').find('.current').attr('value');
+	prev_optionNameArry.push(optionName);
+	
+	
 	$(this).closest('.list').find('.selected').removeClass('selected');
 	$(this).addClass('selected');
 	
-	alert(" $('#selectedName').text()===>"+$('#selectedName').text()+"\n   $('.selected').text()=====>  "+ $('.selected').text());
 	
-	//이미 선택된 옵션인지 확인
-	if($('#selectedName').text() === $('.selected').text()) {
-		Swal.fire({
-			icon: 'warning',
-			title: '이미 선택된 옵션입니다',
-			confirmButtonColor: '#00008b',
-			confirmButtonText: '확인'
-		}).then((result) => {
-			if(result.isConfirmed) {
-				return;
-			}
-		})
-		return;
-	}
-	var index = $(this).parent().parent().parent().index();
-	var indexNum = parseInt(index);
-	indexNum++;
+	selectedText += optionName+": "+$(this).closest('.list').find('.selected').attr('value')+"\n";
+	optionExtChrg += parseInt($(this).find('#optionExtChrg').attr('value'));
+	
+	
+	//선택한 값으로 selectbox값 변경 
+	let text = $(this).data('display-text')|| $(this).html();
+	$(this).closest('.dropdown').find('.current').html(text); //선택값 반영
+	//$(this).closest('.dropdown').prev('select').val($(this).data('value')).trigger('change');
+	
+	
+	//옵션개수
+	let optionCnt = parseInt($('.dropdown').length)-1;		
+	if($(this).closest('.dropdown').index() == optionCnt){ 	//마지막 옵션 선택인 경우 
 		
-	//옵션 카테고리 마지막 선택 시 
-	if($('.dropdown').length == indexNum){	
+		//모든 옵션 선택시 optionBox 초기값으로 돌리기
+		for(var i=0; i<=optionCnt; i++){		
+			$('.current').eq(i).text(prev_optionNameArry[i]+"을 선택해주세요. ");
+		}
+		
+		//이미 선택된 옵션인지 확인
+		if($('#selectedName').text() === selectedText) {
+			//초기화 
+			prev_optionNameArry.splice(0);
+			selectedText = "";
+			optionExtChrg = 0;
+			
+			Swal.fire({
+				icon: 'warning',
+				title: '이미 선택된 옵션입니다',
+				confirmButtonColor: '#00008b',
+				confirmButtonText: '확인'
+			}).then((result) => {
+				if(result.isConfirmed) {
+					return;
+				}
+			})
+			
+			return;
+		}
+		
 		$('#selectedOption').append(
 			'<div class="selectedInfo">' +
-				'<div id="selectedName" class="selectedName selectedName' + selectedIdx + '"></div>' +
+				'<div id="selectedName" class="selectedName' + selectedIdx + '"></div>' +
+				'<div id="selectedExtchrg" class="selectedExtchrg' + selectedIdx + '"></div>' +
 				'<div class="countBox">' +
 					'<button type="button" class="button-down" disabled><i class="fa-solid fa-minus"></i></button>' +
 					'<input type="number" class="selectedAmount" name="selectedAmount" value="1">' +
 					'<button type="button" class="button-up"><i class="fa-solid fa-plus"></i></button>' +
 				'</div>' +
-				'<div class="selectedPrice"></div>' +
-				'<a href="#" class="button-delete" onclick="reset(); return false;"><i class="fa-solid fa-xmark"></i></a>' +
+				'<div id="selectedPrice" class="selectedPrice'+selectedIdx+'"></div>' +
+				'<a href="#" class="button-delete" return false;"><i class="fa-solid fa-xmark"></i></a>' +
 			'</div>'
 		)
 		
-		let prodName = $('.selected').text(); //상품명
+		$('.selectedName' + selectedIdx).text(selectedText);		//상품옵션				
+		let hiddenPriceValue = $('.getHiddenPrice').attr('value');	//판매가 value
 		
-		$('.selectedName' + selectedIdx).text(prodName);
+		//옵션추가금액 합한 금액 
+		let totPrice = parseInt(hiddenPriceValue) + optionExtChrg;
+		$('.selectedPrice'+ selectedIdx).text(totPrice.toLocaleString('ko-KR'));
+		$('.selectedPrice'+ selectedIdx).attr('value', totPrice);
 		
-		let hiddenPriceValue = $('.getHiddenPrice').attr('value'); //판매가 value
-		let hiddenPriceText = $('.getHiddenPrice').text(); //판매가 text
-		$('.selectedPrice').text(hiddenPriceText);
-		$('.selectedPrice').attr('value', hiddenPriceValue);
+		//총옵션추가금액 
+		$('.selectedExtchrg'+ selectedIdx).attr('value', optionExtChrg);
 		
-		indexNum = 0;
+		sumTotalPrice();
 		
+		selectedIdx++;
+		
+		//초기화 
+		prev_optionNameArry.splice(0);
+		selectedText = "";
+		optionExtChrg = 0;
 	}
 	
-	
-
-/*	var text = $(this).data('display-text')|| $(this).html();;
-	$(this).closest('.dropdown').find('.current').html(text); //선택값 반영
-	$(this).closest('.dropdown').prev('select').val($(this).data('value')).trigger('change');
-*/
-	
-	selectedIdx++;
-	
-	sumTotalPrice();
 });
 
 /* 총 금액 계산 */
 function sumTotalPrice() {
 	let total = 0;
-	document.querySelectorAll('.selectedPrice').forEach(function(item){
-		let price = parseInt(item.getAttribute('value'));
-		total +=  price;
-		console.log(item.getAttribute('value'));
-		console.log(total);
-	});
+	for(var i=0; i<=selectedIdx; i++){
+		document.querySelectorAll('.selectedPrice'+i).forEach(function(item){
+			let price = parseInt(item.getAttribute('value'));
+			total += price;
+		});
+	}
 	$('#totalPrice').text(total.toLocaleString('ko-KR'));
 }
 
 /* 옵션 선택 후 삭제 버튼 클릭 시 */
-function reset() {
-	document.querySelector('.button-delete').closest('.selectedInfo').remove();
-	
+$(document).on('click', '.selectedInfo .button-delete', function(){ //up 버튼
+	$(this).closest('.selectedInfo').remove();
 	sumTotalPrice(); //합계 금액 다시 계산
-};
+});
 
 /* 옵션 수량 증가 */
 $(document).on('click', '.countBox .button-up', function(){ //up 버튼
@@ -812,10 +891,12 @@ $(document).on('click', '.countBox .button-up', function(){ //up 버튼
 
 	//수량에 따른 판매가 계산
 	let originalPrice = $('.getHiddenPrice').attr('value');
-	let price = parseInt(originalPrice);
+	let optionExtChrg = $(this).closest('div.selectedInfo').find('#selectedExtchrg').attr('value');
+	let price = parseInt(originalPrice)+parseInt(optionExtChrg);
 	let result = count * price;
-	$(this).closest('div.selectedInfo').find('.selectedPrice').attr('value', result);
-	$(this).closest('div.selectedInfo').find('.selectedPrice').text(result.toLocaleString('ko-KR') + "원"); //원화 단위로 출력
+	
+	$(this).closest('div.selectedInfo').find('#selectedPrice').attr('value', result);
+	$(this).closest('div.selectedInfo').find('#selectedPrice').text(result.toLocaleString('ko-KR') + "원"); //원화 단위로 출력
 	sumTotalPrice();
 });
 
@@ -833,10 +914,12 @@ $(document).on('click', '.countBox .button-down', function(){ //down 버튼
 	
 	//수량에 따른 판매가 계산
 	let originalPrice = $('.getHiddenPrice').attr('value');
-	let price = parseInt(originalPrice);
+	let optionExtChrg = $(this).closest('div.selectedInfo').find('#selectedExtchrg').attr('value');
+	let price = parseInt(originalPrice)+parseInt(optionExtChrg);
 	let result = count * price;
-	$(this).closest('div.selectedInfo').find('.selectedPrice').attr('value', result);
-	$(this).closest('div.selectedInfo').find('.selectedPrice').text(result.toLocaleString('ko-KR') + "원"); //원화 단위로 출력
+	
+	$(this).closest('div.selectedInfo').find('#selectedPrice').attr('value', result);
+	$(this).closest('div.selectedInfo').find('#selectedPrice').text(result.toLocaleString('ko-KR') + "원"); //원화 단위로 출력
 	sumTotalPrice();
 });
 

@@ -33,7 +33,7 @@
 				</div>
 				<div class="title-wrapper">
 					<a href="#">[[${ detail.brand.brandName }]] <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
-					<h2 style="margin-bottom: 0;">[[${ detail.prodName }]]</h2>
+					<h2 style="margin-bottom: 0;" id="prodName">[[${ detail.prodName }]]</h2>
 				</div>
 				<div class="price-wrapper">
 					<ul>
@@ -68,11 +68,11 @@
 					<ul th:if="${#lists.size(optionCategory) > 0}">
 						<li class="th"><p>옵션 선택</p></li>
 						<li class="td">
-							<div id="optionSelector" class="dropdown" tabindex="0" th:each="optionCategory, optionCategoryState: ${optionCategory}" >
-								<span class="current" th:value="|current${optionCategoryState.index}|" style="line-height: 40px;">[[${ optionCategory}]]을 선택하세요</span>
+							<div id="optionSelector" class="dropdown" tabindex="0" th:each="optionCategory : ${ optionCategory }" >
+								<span class="current" th:value="${optionCategory}" style="line-height: 40px;">[[${ optionCategory}]]을 선택하세요</span>
 								<div class="list">
 									<ul>
-										<li th:class="option" th:each="option : ${ option }" th:value="${ option.optionValue }" th:if="${option.optionCategoryNm == optionCategory}" >[[${ option.optionValue}]] (+[[${ option.optionExtChrg}]]원)</li>
+										<li th:class="option" th:each="option : ${ option }" th:value="${ option.optionValue }" th:if="${option.optionName == optionCategory}" >[[${ option.optionValue}]]<span style="float:right;" id="optionExtChrg" th:value="${ option.optionExtChrg }" >+[[${#numbers.formatInteger(option.optionExtChrg, 3, 'COMMA')}]]원</span></li>
 									</ul>
 								</div>
 								<i class="fa-solid fa-chevron-down"></i>
